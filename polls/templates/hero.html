@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hero Section | Students' Score Padi</title>
+  <link rel="stylesheet" href="{% static 'css/hero.css' %}">
+</head>
+<body>
+  <header>
+    <div class="logo">Students' Score Padi</div>
+    <nav>
+      <a href="{% url 'student_dashboard' %}">My Dashboard</a>
+      <form action="{% url 'logout' %}" method="POST" style="display: inline;">
+  {% csrf_token %}
+  <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">
+    Logout
+  </button>
+</form>
+    </nav>
+  </header>
+
+  <main class="hero-container">
+    <h1>Hello, {{ user.username }} 👋</h1>
+    {% if latest_entry %}
+    <div class="prediction-card">
+        <h2>📊 Predicted Score: {{ latest_entry.predicted_score }}%</h2>
+        <p><strong>Study Plan:</strong> {{ latest_entry.study_plan }}</p>
+    </div>
+    {% else %}
+        <p>No prediction yet. Add a course to get started!</p>
+    {% endif %}
+
+    <div class="button-group">
+      <a href="{% url 'create_subject_entry' %}" class="btn">Add New Course</a>
+      <a href="{% url 'get_guidance' %}" class="btn">View Study Advice</a>
+    </div>
+
+    <section class="cards">
+      <div class="card">
+        <h3>📘 Courses Summary</h3>
+        <ul>
+          {% for course in courses %}
+          <li>
+            {{ course.subject_name }} – {{ course.predicted_score }}%
+            <form method="post" action="{% url 'delete_course' course.id %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this course?');">
+              {% csrf_token %}
+              <button type="submit" style="color:red; border:none; background:none; cursor:pointer;">🗑️ Delete</button>
+            </form>
+          </li>
+          {% empty %}
+            <li>No courses added yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🔮 Recent Prediction</h3>
+        <p>{{ recent_feedback }}</p>
+      </div>
+    </section>
+
+    <section class="preferred_learning_style">
+      <h3>Preferred Learning Style</h3>
+      <p>"Keep showing up. You're growing." 💪</p>
+    </section>
+  </main>
+</body>
+</html>
+
+  
+

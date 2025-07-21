@@ -1,0 +1,36 @@
+  <h2>Student Dashboard</h2>
+  
+  <!-- Display student subject entries -->
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Predicted Score</th>
+        <th>Study Plan</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+        <tr>
+          <td>{{ entry.subject }}</td>
+          <td>{{ entry.predicted_score }}</td>
+          <td>
+            {% if entry.study_plan_pdf %}
+              <a href="{{ entry.study_plan_pdf.url }}" target="_blank">View Study Plan</a>
+            {% else %}
+              <a href="{% url 'generate_study_plan' entry.id %}">Generate Study Plan</a>
+            {% endif %}
+          </td>
+          <td>
+            <!-- Add actions like edit or delete if needed -->
+            <a href="#">Edit</a> | <a href="#">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">No subjects entered yet.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>

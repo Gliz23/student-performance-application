@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Students' Score Padi</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="background-overlay"></div>
+
+    <div class="logo_name">Students' Score Padi</div>
+
+    <div class="logo">
+        <img src="{% static 'images/logo.png' %}" alt="avatar icon">       
+    </div>
+
+    <div class="container">
+
+        <div class="sign-upcard">
+            <div class="avatar">
+                <img src="{% static 'images/user_icon.png' %}" alt="avatar icon">
+            </div>
+
+            <h2>Sign up</h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color: rgb(255, 255, 255)">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <p class="error">{{ form.username.errors.0 }}</p>
+                {% endif %}
+
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <p class="error">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <p class="error">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+                <button type="submit">Sign up</button>
+            </form>
+
+            <p class="login-link">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+       
+        </div>
+    </div>
+</body>
+</html>

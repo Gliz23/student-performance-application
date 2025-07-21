@@ -1,0 +1,44 @@
+{% load static %}
+
+
+    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Results</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/subject_results.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Results for {{ subject_entry.subject_name }}</h1>
+
+        <div class="results-card glowing-card">
+            <p><strong>Hours Studied:</strong> {{ subject_entry.hours_studied }}</p>
+            <p><strong>Previous Scores:</strong> {{ subject_entry.previous_scores }}</p>
+            <p><strong>Extracurricular Activities:</strong> {{ subject_entry.extracurricular }}</p>
+            <p><strong>Sleep Hours:</strong> {{ subject_entry.sleep_hours }}</p>
+            <p><strong>Question Papers Practiced:</strong> {{ subject_entry.question_papers }}</p>
+            <p><strong>Preferred Learning Style:</strong> {{ subject_entry.preferred_learning_style }}</p>
+
+            {% if subject_entry.predicted_score %}
+                <p class="predicted-score"><strong>Predicted Score:</strong> {{ subject_entry.predicted_score }}</p>
+            {% else %}
+                <p>No prediction available.</p>
+            {% endif %}
+
+            {% if subject_entry.study_plan %}
+                <p><strong>Study Guide:</strong> {{ subject_entry.study_plan }}</p>
+            {% endif %}
+        </div>
+        <form method="post" action="{% url 'get_guidance' %}">
+            {% csrf_token %}
+            <input type="hidden" name="subject_name" value="{{ subject_entry.subject_name }}">
+            <button type="submit" class="btn btn-primary">Get Study Guidance</button>
+        </form>
+
+</body>
+</html>
+       

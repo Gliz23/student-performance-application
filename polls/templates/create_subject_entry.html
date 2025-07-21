@@ -1,0 +1,72 @@
+<!-- {% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="liz-form-container">
+    <h2>Add a New Subject</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        {% if not form.instance.predicted_score %}
+            <!-- Show this if prediction has NOT been made -->
+            <!-- <button type="submit" name="predict" class="btn btn-primary">Predict Score</button>
+        {% else %}
+            <p><strong>Predicted Score:</strong> {{ form.instance.predicted_score }}%</p>
+            <!-- Show this only AFTER prediction -->
+            <!-- <button type="submit" name="generate_plan" class="btn btn-success">Generate Study Plan</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock %} -->  
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add New Course</title>
+  <link rel="stylesheet" href="{% static 'css/add_subject.css' %}">
+</head>
+<body>
+  <div class="container">
+    <div class="form-box">
+      <h2>Part A</h2>
+      <div class="section-title">EDUCATIONAL INFORMATION</div>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-step active">
+          <p>Question 1/5</p>
+          <label>What was your previous grade in related subject?</label>
+          <input type="text" name="previous_scores" required>
+        </div>
+
+        <div class="form-step">
+          <p>Question 2/5</p>
+          <label>How many hours do you study per week?</label>
+          <input type="number" name="hours_studied" required>
+        </div>
+
+        <div class="form-step">
+          <p>Question 3/5</p>
+          <label>Do you participate in extracurricular activities?</label>
+          <select name="extracurricular" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-step">
+         
+
+

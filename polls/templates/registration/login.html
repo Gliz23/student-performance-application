@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Students' Score Padi</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <div class="background-overlay"></div>
+
+    <div class="logo_name">Students' Score Padi</div>
+
+    <div class="logo">
+        <img src="{% static 'images/logo.png' %}" alt="avatar icon">       
+    </div>
+
+    <div class="container">
+
+        <div class="login-card">
+            <div class="avatar">
+                <img src="{% static 'images/user_icon.png' %}" alt="avatar icon">
+            </div>
+            
+            <h2>Login</h2>
+
+            {% if form.errors %}
+                <p class="error">Invalid username or password.</p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                <button type="submit">Log In</button>
+            </form>
+
+            <p class="login-link">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+        </div>
+    </div>
+</body>
+</html>

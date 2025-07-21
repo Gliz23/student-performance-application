@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Course</title>
+    <link rel="stylesheet" href="{% static 'css/add_subject.css' %}">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-box">
+            <h2>Part A</h2>
+            <p><strong>EDUCATIONAL INFORMATION</strong></p>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ wizard.management_form }}
+                
+                <div class="form-step">
+                    <p>Question {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+                    {{ wizard.form.non_field_errors }}
+                    {{ wizard.form.as_p }}
+                </div>
+
+                <div class="buttons">
+                    {% if wizard.steps.first %}
+                        <button type="submit">Next</button>
+                    {% elif wizard.steps.last %}
+                        <button type="submit" class="finish-btn">Finish</button>
+                    {% else %}
+                        {% if wizard.steps.prev %}
+                            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">← Previous</button>
+                        {% endif %}
+                        <button type="submit">Next</button>
+                    {% endif %}
+                </div>
+
+                <div style="color:red;">
+                    {% if wizard.form.errors %}
+                        <h4>Form Errors:</h4>
+                        {{ wizard.form.errors }}
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

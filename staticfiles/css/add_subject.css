@@ -1,0 +1,57 @@
+body {
+    background: radial-gradient(#2a003f, #0d001f);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.wrapper {
+    background: #111;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px #f0f;
+    width: 400px;
+}
+
+.form-box h2, p {
+    text-align: center;
+    color: #ffdbff;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 10px;
+}
+
+button {
+    background: linear-gradient(to right, #6a00f4, #b500cc);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #8a2be2;
+}
+
+.finish-btn {
+  background: linear-gradient(to right, #6a00f4, #b500cc);
+  color: white;
+  padding: 10px 25px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
