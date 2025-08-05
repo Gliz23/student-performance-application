@@ -35,16 +35,26 @@ class SubjectEntry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('student', 'subject_name')  # 🚨 This line enforces the rule
+        unique_together = ('student', 'subject_name')  
 
     def __str__(self):
         return f"{self.student.user.username} - {self.subject_name}"
  
 
         
-#   Each student is linked to a User and can have multiple subject entries.
-# Each SubjectEntry contains both input data and optional output data (score and guide).
-# You can easily build views to:
-# Create predictions per subject
-# Update/delete subjects
-# Display progress and scores in a dashboard
+class StudyPlanQuestionnaire(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subjects = models.CharField(max_length=255)  # E.g., comma-separated list or JSON
+    learning_style = models.CharField(max_length=50)
+    goal = models.CharField(max_length=100)
+    hours_per_week = models.IntegerField()
+    hours_studied = models.IntegerField(default=0)
+    sleep_hours = models.IntegerField(default=0)
+    extracurricular = models.IntegerField(default=0)
+    question_papers_solved = models.IntegerField(default=0)
+    study_habits = models.TextField(blank=True, default="")
+    previous_grades = models.IntegerField(default=0)
+    motivation_level = models.CharField(max_length=50, default="medium")
+
+    def __str__(self):
+        return f"{self.user.username} - Study Plan"

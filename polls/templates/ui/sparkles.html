@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalTweaks</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}"> <!-- Fixed path -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@3.5.0/tsparticles.slim.min.js"></script>  
+</head>
+<body>
+    
+    <div 
+        id="{{ id|default:'tsparticles' }}"
+        class="{{ class|default:'sparkles-container' }}" 
+        data-min-size="{{ min_size|default:1 }}" 
+        data-max-size="{{ max_size|default:3 }}" 
+        data-speed="{{ speed|default:4 }}" 
+        data-particle-color="{{ particle_color|default:'#ffffff' }}" 
+        data-particle-density="{{ particle_density|default:120 }}" 
+        data-background="{{ background|default:'transparent' }}">
+    </div>
+
+    <script src="{% static 'js/sparkles.js' %}"></script>
+</body>
+</html>
+
+
+ 
+ 
+
+
+ 

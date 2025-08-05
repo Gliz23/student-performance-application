@@ -80,10 +80,10 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to the Student Performance App!</h1>
         <nav>
-            <a href="/">Home</a> | <a href="/polls/dashboard/">Dashboard</a>
+            <a href="{% url 'login' %}"> Sign in</a> | <a href="{% url 'signup' %}">Signup</a>
         </nav>
+        
     </header>
 
     <main>

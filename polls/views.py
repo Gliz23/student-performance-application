@@ -1,4 +1,5 @@
 import requests
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,15 +10,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
+from .forms import StudyPlanQuestionnaireForm
+from .models import StudyPlanQuestionnaire
 
 from django.views.decorators.http import require_POST
-
-import requests
-import json
-
 from .forms import Step1Form, Step2Form, Step3Form, Step4Form, Step5Form
 from .models import SubjectEntry
-
 from formtools.wizard.views import SessionWizardView
 from .forms import Step1Form, Step2Form, Step3Form, Step4Form, Step5Form
  
@@ -30,6 +28,9 @@ FASTAPI_URL = 'http://127.0.0.1:8000'
 
 def home(request):
     return render(request, 'base.html')  # This will render base.html as the home page
+
+def sparkles_preview(request):
+    return render(request, 'sparkles_preview.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -46,7 +47,6 @@ def login_view(request):
         form = AuthenticationForm()
 
     return render(request, 'registration/login.html', {'form': form})
-
 
 
 def signup_view(request):
@@ -70,7 +70,7 @@ def signup_view(request):
 
     return render(request, 'registration/signup.html', {'form': form})
 
- 
+FASTAPI_PREDICTION_URL = 'http://127.0.0.1:8000/predict'
 
 class SubjectWizard(SessionWizardView):
     form_list = [Step1Form, Step2Form, Step3Form, Step4Form, Step5Form]
@@ -106,7 +106,7 @@ class SubjectWizard(SessionWizardView):
         }
 
         try:
-            response = requests.post("http://127.0.0.1:8000/predict", json=payload)
+            response = requests.post(FASTAPI_PREDICTION_URL, json=payload)
             response.raise_for_status()  # Raise an error for bad responses
             result = response.json()
 
@@ -200,7 +200,7 @@ def multi_step_form(request):
 
     return render(request, 'multi_step_form.html', {'form': form, 'step': step})
 
-FASTAPI_PREDICTION_URL = 'http://127.0.0.1:8000/predict-score'
+
 
 def send_to_fastapi(subject_entry):
     import requests
@@ -253,17 +253,6 @@ def get_guidance_view(request):
             return render(request, "get_guidance.html", {
                 "error": "No course name (ID) provided."
             })
-        
-        # entry = get_object_or_404(SubjectEntry, id=subject_name, student=request.user.student)
-
-        # try:
-        #     student = Student.objects.filter(user=request.user).first()
-        #     subject = SubjectEntry.objects.filter(subject_name=subject_name, student=student).first()
-        # except SubjectEntry.DoesNotExist:
-        #     return render(request, "get_guidance.html", {
-        #         "error": f"No course found with name '{subject_name}'."
-        #     })
-
 
         # Get current student
         student = Student.objects.filter(user=request.user).first()
@@ -332,3 +321,71 @@ def delete_course(request, course_id):
     return redirect("hero")
 
 
+
+@login_required
+def questionnaire_view(request):
+    if request.method == 'POST':
+        form = StudyPlanQuestionnaireForm(request.POST)
+        if form.is_valid():
+            # Save questionnaire data
+            questionnaire = form.save(commit=False)
+            questionnaire.user = request.user
+            questionnaire.save()
+            
+            # Prepare data for FastAPI (all fields are required and validated)
+            data = {
+                'subjects': form.cleaned_data['subjects'],
+                'learning_style': form.cleaned_data['learning_style'],
+                'goal': form.cleaned_data['goal'],
+                'hours_per_week': form.cleaned_data['hours_per_week'],
+                'hours_studied': form.cleaned_data['hours_studied'],
+                'sleep_hours': form.cleaned_data['sleep_hours'],
+                'extracurricular': form.cleaned_data['extracurricular'],
+                'question_papers_solved': form.cleaned_data['question_papers_solved'],
+                'study_habits': form.cleaned_data['study_habits'],
+                'previous_grades': form.cleaned_data['previous_grades'],
+                'motivation_level': form.cleaned_data['motivation_level'],
+            }
+            
+            # Send to FastAPI
+            try:
+                response = requests.post(f"{FASTAPI_URL}/api/study-plan", json=data)
+                response.raise_for_status()
+                result = response.json()
+                return render(request, 'templates/study_plan.html', {
+                    'study_plan': result['study_plan'],
+                    'prediction': result.get('prediction')
+                })
+            except requests.RequestException as e:
+                print(f"Error contacting FastAPI: {e}")
+                form.add_error(None, f'Error contacting backend: {e}')
+        return render(request, 'templates/questionnaire.html', {'form': form})
+    else:
+        form = StudyPlanQuestionnaireForm()
+    
+    return render(request, 'templates/questionnaire.html', {'form': form})
+
+# @login_required We can use this if the form works without errors.
+# def questionnaire_view(request):
+#     latest_entry = SubjectEntry.objects.filter(student=request.user.student).last()
+#     initial_data = {}
+#     if latest_entry:
+#         initial_data = {
+#             'hours_studied': latest_entry.hours_studied,
+#             'sleep_hours': latest_entry.sleep_hours,
+#             'extracurricular': latest_entry.extracurricular,
+#             'question_papers_solved': latest_entry.question_papers,
+#             'previous_grades': latest_entry.previous_scores,
+#             'motivation_level': latest_entry.motivation,
+#             'learning_style': latest_entry.preferred_learning_style,
+#         }
+#     if request.method == 'POST':
+#         form = StudyPlanQuestionnaireForm(request.POST)
+#         if form.is_valid():
+#             # ... existing logic ...
+#         return render(request, 'performance/questionnaire.html', {'form': form})
+#     else:
+#         form = StudyPlanQuestionnaireForm(initial=initial_data)
+#     return render(request, 'performance/questionnaire.html', {'form': form})
+ 
+ 
