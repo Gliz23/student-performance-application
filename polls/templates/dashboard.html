@@ -2,11 +2,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Charts</title>
+    <title>{{ course.subject_name }} Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
-    <h1>📊 Your Visual Dashboard</h1>
-    <p>Coming soon: graphs and insights about your performance.</p>
-    <a href="{% url 'hero' %}">← Back to Hero Section</a>
+
+  {% include 'sidebar_component.html' %}
+
+    <div class="main-content">
+        <div class="dashboard-header">
+        <h1>📊 {{ course.subject_name }} Dashboard</h1>
+        <a href="{% url 'create_subject_entry' %}" class="btn">+ New Prediction</a>
+        </div>
+    
+        <div class="dashboard-container">
+            <!-- Subject Results Card -->
+            <div class="dashboard-card">
+                <h2>Course Summary</h2>
+                {% include 'subject_results_card.html' with course=course %}
+            </div>
+
+            <!-- Study Plan Card -->
+            <div class="dashboard-card">
+                <h2>Study Plan</h2>
+                {% if course.study_plan %}
+                    <p>{{ course.study_plan }}</p>
+                {% else %}
+                    <p>No study plan generated yet.</p>
+                    <a href="{% url 'get_guidance' course.id %}" class="btn">Generate Study Plan</a>
+                {% endif %}
+            </div>
+
+             <!-- Performance Charts Card -->
+            <div class="dashboard-card">
+                <h2>Performance Analytics</h2>
+                <div class="chart-placeholder">
+                <!-- Chart will go here -->
+                <p>Performance charts coming soon!</p>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- <a href="{% url 'hero' %}">← Back to Hero Section</a> -->
 </body>
 </html>

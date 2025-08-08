@@ -22,11 +22,14 @@ urlpatterns = [
     # path("generate-study-plan/<int:entry_id>/", views.generate_study_plan, name="generate_study_plan"),
     path('hero/', views.hero_view, name='hero'),
 
+    path('course/<int:course_id>/', views.subject_dashboard, name='subject_dashboard'),
+
     # path('charts/', views.my_charts_view, name='my_charts'),
     
     path('guidance/', views.get_guidance_view, name='get_guidance'),
     path("student_dashboard/", views.student_dashboard_view, name="student_dashboard"),
     path('delete-course/<int:course_id>/', delete_course, name='delete_course'),
 
+    path('course/<int:course_id>/edit/', views.edit_course, name='edit_course'),
 ]
 

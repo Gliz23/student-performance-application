@@ -40,7 +40,7 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             messages.success(request, "Welcome back!")
-            return redirect('hero')  # Redirect to the student dashboard
+            return redirect('hero')  
         else:
             messages.error(request, "Invalid username or password")
     else:
@@ -126,6 +126,14 @@ class SubjectWizard(SessionWizardView):
         form = self.get_form()
         print("Form errors:", form.errors)  # Print actual validation errors
         return super().post(request, *args, **kwargs)
+
+def subject_dashboard(request, course_id):
+    course = get_object_or_404(SubjectEntry, id=course_id)
+    return render(request, 'dashboard.html', {
+        'course': course,
+        'courses': SubjectEntry.objects.filter(student=request.user)
+    })
+
 
 @login_required
 def subject_results_view(request, subject_id):
@@ -388,4 +396,29 @@ def questionnaire_view(request):
 #         form = StudyPlanQuestionnaireForm(initial=initial_data)
 #     return render(request, 'performance/questionnaire.html', {'form': form})
  
- 
+
+@login_required
+def edit_course(request, course_id):
+    course = get_object_or_404(course, id=course_id, student=request.user.student)
+    
+    if request.method == 'POST':
+        form = Step1Form(request.POST, user=request.user)
+        if form.is_valid():
+            # Update course information
+            course.subject_name = form.cleaned_data['subject_name']
+            course.preferred_learning_style = form.cleaned_data.get('preferred_learning_style', 'None')
+            course.save()
+            return redirect('subject_dashboard', course_id=course.id)
+    else:
+        # Pre-populate form with existing data
+        initial_data = {
+            'subject_name': course.subject_name,
+            'preferred_learning_style': course.preferred_learning_style
+        }
+        form = Step1Form(initial=initial_data, user=request.user)
+    
+    return render(request, 'edit_course.html', {
+        'form': form,
+        'course': course
+    })
+

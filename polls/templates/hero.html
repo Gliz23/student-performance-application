@@ -10,73 +10,77 @@
   <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
 </head>
 <body>
-  <header class="main-header">
-    <div class="logo-container">
-        <a href="{% url 'home' %}" class="logo-link">
-            <img src="{% static 'images/gtlogo.png' %}" 
-                alt="GoalTweaks Logo" 
-                class="logo-img"/>  
-        </a>
-        
-    </div>
-    <div class="page-titles">
-      <h1 class="homepage-header">{{ user.username }}'s Goals</h1>
-    </div>
-    <div class="auth-buttons">
-        <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
-        <form action="{% url 'logout' %}" method="POST" class="logout-form">
-            {% csrf_token %}
-            <button type="submit" class="auth-btn logout-btn">Logout</button>
-        </form>
-    </div>
-  </header>
-  
+  {% include 'sidebar_component.html' %}
 
-  <main class="hero-container">
-    
-    {% if latest_entry %}
-    <div class="prediction-card">
-        <h2>📊 Predicted Score: {{ latest_entry.predicted_score }}%</h2>
-        <p><strong>Study Plan:</strong> {{ latest_entry.study_plan }}</p>
-    </div>
-    {% else %}
-        <p>No prediction yet. Add a course to get started!</p>
-    {% endif %}
-
-    <div class="button-group">
-      <a href="{% url 'create_subject_entry' %}" class="btn">Add New Course</a>
-      <a href="{% url 'get_guidance' %}" class="btn">View Study Advice</a>
-    </div>
-
-    <section class="cards">
-      <div class="card">
-        <h3>📘 Courses Summary</h3>
-        <ul>
-          {% for course in courses %}
-          <li>
-            {{ course.subject_name }} – {{ course.predicted_score }}%
-            <form method="post" action="{% url 'delete_course' course.id %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this course?');">
+  <div class="main-content">
+    <header class="main-header">
+      <div class="logo-container">
+          <a href="{% url 'home' %}" class="logo-link">
+              <img src="{% static 'images/gtlogo.png' %}" 
+                  alt="GoalTweaks Logo" 
+                  class="logo-img"/>  
+          </a>
+          
+      </div>
+      <div class="page-titles">
+        <h1 class="homepage-header">{{ user.username }}'s Goals</h1>
+      </div>
+      <div class="auth-buttons">
+          <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
+          <form action="{% url 'logout' %}" method="POST" class="logout-form">
               {% csrf_token %}
-              <button type="submit" style="color:red; border:none; background:none; cursor:pointer;">🗑️ Delete</button>
-            </form>
-          </li>
-          {% empty %}
-            <li>No courses added yet.</li>
-          {% endfor %}
-        </ul>
+              <button type="submit" class="auth-btn logout-btn">Logout</button>
+          </form>
+      </div>
+    </header>
+    
+
+    <main class="hero-container">
+      
+      {% if latest_entry %}
+      <div class="prediction-card">
+          <h2>📊 Predicted Score: {{ latest_entry.predicted_score }}%</h2>
+          <p><strong>Study Plan:</strong> {{ latest_entry.study_plan }}</p>
+      </div>
+      {% else %}
+          <p>No prediction yet. Add a course to get started!</p>
+      {% endif %}
+
+      <div class="button-group">
+        <a href="{% url 'create_subject_entry' %}" class="btn">Add New Course</a>
+        <a href="{% url 'get_guidance' %}" class="btn">View Study Advice</a>
       </div>
 
-      <div class="card">
-        <h3>🔮 Recent Prediction</h3>
-        <p>{{ recent_feedback }}</p>
-      </div>
-    </section>
+      <section class="cards">
+        <div class="card">
+          <h3>📘 Courses Summary</h3>
+          <ul>
+            {% for course in courses %}
+            <li>
+              {{ course.subject_name }} – {{ course.predicted_score }}%
+              <form method="post" action="{% url 'delete_course' course.id %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this course?');">
+                {% csrf_token %}
+                <button type="submit" style="color:red; border:none; background:none; cursor:pointer;">🗑️ Delete</button>
+              </form>
+            </li>
+            {% empty %}
+              <li>No courses added yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
 
-    <section class="preferred_learning_style">
-      <h3>Preferred Learning Style</h3>
-      <p>"Keep showing up. You're growing." 💪</p>
-    </section>
-  </main>
+        <div class="card">
+          <h3>🔮 Latest Feadback</h3>
+          <p>{{ recent_feedback }}</p>
+        </div>
+      </section>
+
+      <section class="preferred_learning_style">
+        <h3>Preferred Learning Style</h3>
+        <p>{{course.preferred_learning_style}}</p>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
 

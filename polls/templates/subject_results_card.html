@@ -1,6 +1,5 @@
 {% load static %}
 
-
     
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/subject_results.css' %}">
 </head>
 <body>
-    <div class="container">
+    <!-- <div class="container">
         <h1>Results for {{ subject_entry.subject_name }}</h1>
 
         <div class="results-card glowing-card">
@@ -37,8 +36,37 @@
             {% csrf_token %}
             <input type="hidden" name="subject_name" value="{{ subject_entry.subject_name }}">
             <button type="submit" class="btn btn-primary">Get Study Guidance</button>
-        </form>
-
+        </form> -->
+    <div class="subject-results-card">
+        <div class="result-item">
+            <span class="result-label">Hours Studied:</span>
+            <span class="result-value">{{ course.hours_studied }}</span>
+        </div>
+        <div class="result-item">
+            <span class="result-label">Previous Scores:</span>
+            <span class="result-value">{{ course.previous_scores }}</span>
+        </div>
+        <div class="result-item">
+            <span class="result-label">Extracurricular Activities:</span>
+            <span class="result-value">{{ course.extracurricular }}</span>
+        </div>
+        <div class="result-item">
+            <span class="result-label">Sleep Hours:</span>
+            <span class="result-value">{{ course.sleep_hours }}</span>
+        </div>
+        <div class="result-item">
+            <span class="result-label">Question Papers Practiced:</span>
+            <span class="result-value">{{ course.question_papers }}</span>
+        </div>
+        <div class="result-item">
+            <span class="result-label">Learning Style:</span>
+            <span class="result-value">{{ course.preferred_learning_style }}</span>
+        </div>
+        <div class="result-item highlight">
+            <span class="result-label">Predicted Score:</span>
+            <span class="result-value">{{ course.predicted_score }}%</span>
+        </div>
+    </div>
 </body>
 </html>
        
