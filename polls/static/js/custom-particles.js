@@ -90,3 +90,10 @@ document.addEventListener("DOMContentLoaded", function() {
     
     animate();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const lines = document.querySelectorAll('.subtitle div');
+    lines.forEach((line, index) => {
+        line.style.animationDelay = `${index * 0.2}s`;
+    });
+});

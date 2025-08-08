@@ -2,7 +2,6 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background: url("/static/images/signup_bg.jpg") no-repeat center center fixed;
     background-size: cover;
     font-family: 'Segoe UI', sans-serif;
     display: flex;
@@ -10,15 +9,6 @@ body {
     align-items: center;
 }
 
-.background-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 0;
-}
 
 .container {
     z-index: 1;
@@ -26,31 +16,6 @@ body {
     color: white;
 }
 
-.logo_name {
-    position: absolute;
-    top: 20px;
-    left: 30px;
-    font-size: 28px;
-    font-weight: bold;
-    color: white;
-    background-color: rgba(255, 255, 255, 0.15);
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 1px solid white;
-}
-
-.logo {
-    position:absolute;
-    top: 20px;
-    right: 30px;
-    height: 30px;
-    width: 30px;
-    z-index: 1;  
-}
-.logo img{
-    width:100%;
-    height:100%;
-}
 
 .login-card {
     position: relative;
@@ -90,7 +55,7 @@ form {
     align-items: center;
 }
 
-form input {
+/* form input {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
@@ -98,13 +63,50 @@ form input {
     border: 1px solid #555;
     color: white;
     border-radius: 10px;
+} */
+
+
+.input-field {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.input-field input {
+    padding: 12px;
+    background-color: #1a1a1a;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+.input-field input::placeholder {
+    color: #777;
+    opacity: 1;
+}
+
+
+.input-field input:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+
+.error {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    text-align: left;
 }
 
 form button {
-    width: 100%;
+    width: 50%;
     padding: 12px;
-    background: linear-gradient(to right, #6a00f4, #b500cc);
+    background: linear-gradient(to right, #806502, #c1b136ec);
     border: none;
+    margin-top: 16px;
     color: white;
     border-radius: 12px;
     font-size: 16px;
@@ -118,7 +120,11 @@ form button:hover {
 
 .login-link {
     margin-top: 10px;
-    color: white;
+    color: rgb(139, 121, 0);
+}
+
+.login-card a {
+    color :#555
 }
 
 .error {

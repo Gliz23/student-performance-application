@@ -9,10 +9,36 @@
     <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
 </head>
 <body>
+    <header class="main-header">
+
+        <div class="logo-container">
+            <a href="{% url 'home' %}" class="logo-link">
+                <img src="{% static 'images/gtlogo.png' %}" 
+                    alt="GoalTweaks Logo" 
+                    class="logo-img"/>  
+            </a>
+        </div>
+
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="auth-btn sign-in">Sign In</a>
+            <a href="{% url 'signup' %}" class="auth-btn sign-up">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="golden-rays"></div>
+
     <div class="main-container">
+        
         <div class="content-wrapper">
             <h1 class="title">GoalTweaks</h1>
+
             <canvas class="canvas" id="particles-canvas"></canvas>
+            
+            <div class="subtitle">
+                <div class="sub_1">Set your goal</div>
+                <div class="sub_2">Tweak habits</div>
+                <div class="sub_3">Succeed</div>
+        </div>
         </div>
     </div>
     <script src="{% static 'js/custom-particles.js' %}"></script>
