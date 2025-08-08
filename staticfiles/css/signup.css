@@ -10,16 +10,7 @@ body {
     align-items: center;
 }
 
-.background-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0, 0, 0, 0.5); /* darkness level */
-    z-index: 0;
-}
-
+ 
 .container {
     border-radius: 2rem;
     text-align: center;
@@ -50,7 +41,7 @@ form {
     align-items: center;
 }
 
-form input {
+/* form input {
     width: 80%;
     padding: 12px;
     margin: 10px 5px;
@@ -58,12 +49,53 @@ form input {
     border: 1px solid #555;
     color: white;
     border-radius: 10px;
+} */
+
+.input-field {
+    width: 100%;
+    margin: 10px 0;
 }
+
+.input-field input {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a1a1a;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+.input-field input::placeholder {
+    color: #777;
+    opacity: 1;
+}
+
+
+.input-field input:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+
+.error {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    text-align: left;
+}
+
+.sign-upcard .input-field input {
+    width: 80%;
+}
+
 
 form button {
     width: 50%;
     padding: 12px;
-    background: linear-gradient(to right, #6a00f4, #b500cc);
+    background: linear-gradient(to right, #806502, #c1b136ec);
     border: none;
     color: white;
     border-radius: 12px;
@@ -77,12 +109,6 @@ form button:hover {
     transform: scale(1.05);
 }
 
-.error {
-    color: #ff6b6b;
-    font-size: 0.85rem;
-    text-align: left;
-}
-
 .avatar {
     width: 40px;
     height: 40px;
@@ -93,32 +119,6 @@ form button:hover {
     height: 100%;
 }
 
-.logo_name {
-    position: absolute;
-    top: 20px;
-    left: 30px;
-    font-size: 28px;
-    font-weight: bold;
-    color: white;
-    background-color: rgba(255, 255, 255, 0.15);
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 1px solid white;
-}
-
-.logo {
-    position:absolute;
-    top: 20px;
-    right: 30px;
-    height: 30px;
-    width: 30px;
-    z-index: 1;  
-}
-.logo img{
-    width:100%;
-    height:100%;
-}
-
 h2 {
 
     margin: 5px;
@@ -127,5 +127,8 @@ h2 {
 
 .login-link {
     margin-top: 10px;
-    color: white;
+    color: rgb(139, 121, 0);
+}
+.sign-upcard a {
+    color :#555
 }

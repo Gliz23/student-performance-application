@@ -5,25 +5,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hero Section | Students' Score Padi</title>
+  <title>GoalTweaks || {{user.username}}'s Goals</title>
   <link rel="stylesheet" href="{% static 'css/hero.css' %}">
+  <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <div class="logo">Students' Score Padi</div>
-    <nav>
-      <a href="{% url 'student_dashboard' %}">My Dashboard</a>
-      <form action="{% url 'logout' %}" method="POST" style="display: inline;">
-  {% csrf_token %}
-  <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">
-    Logout
-  </button>
-</form>
-    </nav>
+  <header class="main-header">
+    <div class="logo-container">
+        <a href="{% url 'home' %}" class="logo-link">
+            <img src="{% static 'images/gtlogo.png' %}" 
+                alt="GoalTweaks Logo" 
+                class="logo-img"/>  
+        </a>
+        
+    </div>
+    <div class="page-titles">
+      <h1 class="homepage-header">{{ user.username }}'s Goals</h1>
+    </div>
+    <div class="auth-buttons">
+        <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
+        <form action="{% url 'logout' %}" method="POST" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="auth-btn logout-btn">Logout</button>
+        </form>
+    </div>
   </header>
+  
 
   <main class="hero-container">
-    <h1>Hello, {{ user.username }} 👋</h1>
+    
     {% if latest_entry %}
     <div class="prediction-card">
         <h2>📊 Predicted Score: {{ latest_entry.predicted_score }}%</h2>

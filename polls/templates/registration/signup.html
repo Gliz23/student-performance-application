@@ -6,17 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up | Students' Score Padi</title>
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+     <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div class="background"></div>
+    
 
-    <div class="background-overlay"></div>
+     <header class="main-header">
 
-    <div class="logo_name">Students' Score Padi</div>
+        <div class="logo-container">
+            <a href="{% url 'home' %}" class="logo-link">
+                <img src="{% static 'images/gtlogo.png' %}" 
+                    alt="GoalTweaks Logo" 
+                    class="logo-img"/>  
+            </a>
+        </div>
 
-    <div class="logo">
-        <img src="{% static 'images/logo.png' %}" alt="avatar icon">       
-    </div>
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="auth-btn sign-in">Sign In</a>
+            <a href="{% url 'signup' %}" class="auth-btn sign-up">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="golden-rays"></div>
 
     <div class="container">
 
@@ -27,31 +38,35 @@
 
             <h2>Sign up</h2>
 
-            {% if messages %}
+            <!-- {% if messages %}
                 {% for message in messages %}
                     <p style="color: rgb(255, 255, 255)">{{ message }}</p>
                 {% endfor %}
-            {% endif %}
+            {% endif %} -->
 
             <form method="POST">
                 {% csrf_token %}
-                {{ form.username.label_tag }}
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <p class="error">{{ form.username.errors.0 }}</p>
-                {% endif %}
+                 <div class="input-field">
+                    <input type="text" name="username" id="id_username" placeholder="Username" required>
+                    {% if form.username.errors %}
+                        <p class="error">{{ form.username.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="input-field">
+                    <input type="password" name="password1" id="id_password1" placeholder="Password" required>
+                    {% if form.password1.errors %}
+                        <p class="error">{{ form.password1.errors.0 }}</p>
+                    {% endif %}
+                </div>
 
-                {{ form.password1.label_tag }}
-                {{ form.password1 }}
-                {% if form.password1.errors %}
-                    <p class="error">{{ form.password1.errors.0 }}</p>
-                {% endif %}
-
-                {{ form.password2.label_tag }}
-                {{ form.password2 }}
-                {% if form.password2.errors %}
-                    <p class="error">{{ form.password2.errors.0 }}</p>
-                {% endif %}
+                 <div class="input-field">
+                    <input type="password" name="password2" id="id_password2" placeholder="Confirm Password" required>
+                    {% if form.password2.errors %}
+                        <p class="error">{{ form.password2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
                 <button type="submit">Sign up</button>
             </form>
 

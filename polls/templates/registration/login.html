@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Students' Score Padi</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-     <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
 </head>
 <body>
     <header class="main-header">
@@ -42,14 +42,16 @@
 
             <form method="POST">
                 {% csrf_token %}
-                {{ form.username.label_tag }}
-                {{ form.username }}
-                {{ form.password.label_tag }}
-                {{ form.password }}
+                <div class="input-field">
+                    <input type="text" name="username" id="id_username" placeholder="Username" required>
+                </div>
+                <div class="input-field">
+                    <input type="password" name="password" id="id_password" placeholder="Password" required>
+                </div>
                 <button type="submit">Log In</button>
             </form>
 
-            <p class="login-link">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+            <p class="signup-link">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
         </div>
     </div>
 </body>
