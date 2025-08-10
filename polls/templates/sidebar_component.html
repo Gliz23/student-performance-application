@@ -1,206 +1,44 @@
 {% load static %}
-<div class="sidebar">
-  <!-- <div class="sidebar-header">
-    <h3>My Goals</h3>
-    <button class="add-section-btn" id="addSectionBtn">+ Add Section</button>
-  </div> -->
-  
-  <div class="sidebar">
+
+<div class="sidebar-content">
     <div class="sidebar-header">
         <h3>My Goals</h3>
         <button class="add-section-btn" id="addSectionBtn">+ Add Section</button>
     </div>
     
     <div class="sections-container">
-        <!-- Default Academic Goals Section -->
         <div class="section" data-section="academic">
-        <div class="section-header">
-            <h4>📚 Academic Goals</h4>
-        </div>
-        <ul class="courses-list">
-            {% for course in courses %}
-            <li class="course-item">
-            {% url 'subject_dashboard' course.id as dashboard_url %}
-            {% if dashboard_url %}
-                <a href="{{ dashboard_url }}" class="course-link">
-                {{ course.subject_name }}
-                </a>
-            {% else %}
-                <span class="course-link">
-                {{ course.subject_name }}
-                </span>
-            {% endif %}
-            <div class="course-actions">
-                {% url 'edit_course' course.id as edit_url %}
-                {% if edit_url %}
-                <a href="{{ edit_url }}" class="edit-btn">✏️</a>
-                {% endif %}
-                <form method="post" action="{% url 'delete_course' course.id %}" onsubmit="return confirm('Are you sure?');">
-                {% csrf_token %}
-                <button type="submit" class="delete-btn">🗑️</button>
-                </form>
+            <div class="section-header">
+                <h4>📚 Academic Goals</h4>
             </div>
-            </li>
-            {% empty %}
-            <li class="empty-message">No courses added yet</li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'create_subject_entry' %}" class="add-course-btn">+ Add Course</a>
+            <ul class="courses-list">
+                {% for course in courses %}
+                <li class="course-item">
+                    <a href="{% url 'subject_dashboard' course.id %}" class="course-link">
+                        <span class="course-name">{{ course.subject_name }}</span>
+                        <span class="course-score">{{ course.entries.first.predicted_score }}%</span>
+                    </a>
+                    <div class="course-actions">
+                        <a href="{% url 'edit_course' course.id %}" class="edit-btn">✏️</a>
+                        <form method="post" action="{% url 'delete_course' course.id %}" onsubmit="return confirm('Are you sure?');">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-btn">🗑️</button>
+                        </form>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="empty-message">No courses added yet</li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'create_subject_entry' %}" class="add-course-btn">+ Add Course</a>
         </div>
-        
-        <!-- Additional sections will be added here dynamically -->
     </div>
-    </div>
-
-  <div class="sections-container">
-    <!-- Default Academic Goals Section -->
-    <div class="section" data-section="academic">
-      <div class="section-header">
-        <h4>📚 Academic Goals</h4>
-      </div>
-      <ul class="courses-list">
-        {% for course in courses %}
-        <li class="course-item">
-          <a href="{% url 'subject_dashboard' course.id %}" class="course-link">
-            {{ course.subject_name }}
-          </a>
-          <div class="course-actions">
-            <!-- We will work on this functionality later. -->
-            <a href="{% url 'edit_course' course.id %}" class="edit-btn">✏️</a>
-            <form method="post" action="{% url 'delete_course' course.id %}" onsubmit="return confirm('Are you sure?');">
-              {% csrf_token %}
-              <button type="submit" class="delete-btn">🗑️</button>
-            </form>
-          </div>
-        </li>
-        {% empty %}
-        <li class="empty-message">No courses added yet</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'create_subject_entry' %}" class="add-course-btn">+ Add Course</a>
-    </div>
-    
-    <!-- Additional sections will be added here dynamically -->
-  </div>
 </div>
 
-<style>
-  .sidebar {
-    width: 300px;
-    height: 100vh;
-    background-color: #1a1a1a;
-    color: #f5f5f5;
-    position: fixed;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    overflow-y: auto;
-  }
-  
-  .sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-  }
-  
-  .add-section-btn {
-    background-color: #FFD700;
-    color: #000;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .section {
-    margin-bottom: 20px;
-    background-color: #2a2a2a;
-    border-radius: 8px;
-    padding: 15px;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .courses-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .course-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #333;
-  }
-  
-  .course-link {
-    color: #FFD700;
-    text-decoration: none;
-    flex-grow: 1;
-  }
-  
-  .course-link:hover {
-    text-decoration: underline;
-  }
-  
-  .course-actions {
-    display: flex;
-    gap: 5px;
-  }
-  
-  .edit-btn, .delete-btn {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .edit-btn:hover {
-    color: #FFD700;
-  }
-  
-  .delete-btn:hover {
-    color: #ff4d4d;
-  }
-  
-  .add-course-btn {
-    display: block;
-    margin-top: 10px;
-    color: #FFD700;
-    text-decoration: none;
-    text-align: center;
-    padding: 5px;
-    border: 1px dashed #FFD700;
-    border-radius: 4px;
-  }
-  
-  .add-course-btn:hover {
-    background-color: rgba(255, 215, 0, 0.1);
-  }
-  
-  .empty-message {
-    color: #aaa;
-    font-style: italic;
-    padding: 8px 0;
-  }
-</style>
-
 <script>
-  document.getElementById('addSectionBtn').addEventListener('click', function() {
-    // This would open a modal or prompt to add a new section
-    // For now, we'll just alert
-    alert('Functionality to add new sections coming soon!');
-  });
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('addSectionBtn').addEventListener('click', function() {
+        alert('Functionality to add new sections coming soon!');
+    });
+});
 </script>

@@ -1,97 +1,34 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{% block title %}My Student Dashboard{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
-    <style>
-        .liz-form-container {
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 2rem auto;
-            font-family: 'Segoe UI', sans-serif;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GoalTweaks{% endblock %}</title>
     
-        .liz-form-container h2 {
-            text-align: center;
-            color: #6a0dad;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-        }
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     
-        .liz-form-container label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            font-weight: 600;
-        }
-    
-        .liz-form-container input[type="text"],
-        .liz-form-container input[type="number"],
-        .liz-form-container select,
-        .liz-form-container textarea {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1.2rem;
-            border: 2px solid #ddd;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-    
-        .liz-form-container input:focus,
-        .liz-form-container select:focus,
-        .liz-form-container textarea:focus {
-            border-color: #a29bfe;
-            outline: none;
-        }
-    
-        .liz-form-container button {
-            background-color: #6a0dad;
-            color: white;
-            padding: 0.8rem 1.6rem;
-            font-size: 1rem;
-            border: none;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            display: block;
-            margin: 0 auto;
-            transition: background-color 0.3s ease;
-        }
-    
-        .liz-form-container button:hover {
-            background-color: #4b0082;
-        }
-    
-        .success-message {
-            background-color: #dff0d8;
-            border-left: 5px solid #3c763d;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 1rem;
-            font-size: 1rem;
-            color: #3c763d;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hero.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles_preview.css' %}">
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="{% url 'login' %}"> Sign in</a> | <a href="{% url 'signup' %}">Signup</a>
-        </nav>
+    <div class="layout-container">
         
-    </header>
+        <aside class="sidebar" id="sidebar">
+            
+            {% include 'sidebar_component.html' %}
+        </aside>
 
-    <main>
-        {% block content %} {% endblock %}
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 Liz Inspired Technologies</p>
-    </footer>
+        <!-- Main content area -->
+        <main class="main-content" id="mainContent">
+            {% block content %}{% endblock %}
+        </main>
+
+        <button class="toggle-sidebar" id="toggleSidebar">❯</button>
+    </div>
+    <script src="{% static 'js/sidebar.js' %}"></script>
 </body>
 </html>
+

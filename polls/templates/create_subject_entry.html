@@ -1,39 +1,13 @@
-<!-- {% extends "base.html" %}
-{% load static %}
-
-{% block content %}
-<div class="liz-form-container">
-    <h2>Add a New Subject</h2>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="success-message">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        
-        {% if not form.instance.predicted_score %}
-            <!-- Show this if prediction has NOT been made -->
-            <!-- <button type="submit" name="predict" class="btn btn-primary">Predict Score</button>
-        {% else %}
-            <p><strong>Predicted Score:</strong> {{ form.instance.predicted_score }}%</p>
-            <!-- Show this only AFTER prediction -->
-            <!-- <button type="submit" name="generate_plan" class="btn btn-success">Generate Study Plan</button>
-        {% endif %}
-    </form>
-</div>
-{% endblock %} -->  
-
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Add New Course</title>
+
+<link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
   <link rel="stylesheet" href="{% static 'css/add_subject.css' %}">
 </head>
 <body>

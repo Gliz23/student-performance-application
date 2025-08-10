@@ -27,7 +27,7 @@ FASTAPI_URL = 'http://127.0.0.1:8000'
 
 
 def home(request):
-    return render(request, 'base.html')  # This will render base.html as the home page
+    return render(request, 'base.html')  
 
 def sparkles_preview(request):
     return render(request, 'sparkles_preview.html')
@@ -398,27 +398,7 @@ def questionnaire_view(request):
  
 
 @login_required
-def edit_course(request, course_id):
-    course = get_object_or_404(course, id=course_id, student=request.user.student)
-    
-    if request.method == 'POST':
-        form = Step1Form(request.POST, user=request.user)
-        if form.is_valid():
-            # Update course information
-            course.subject_name = form.cleaned_data['subject_name']
-            course.preferred_learning_style = form.cleaned_data.get('preferred_learning_style', 'None')
-            course.save()
-            return redirect('subject_dashboard', course_id=course.id)
-    else:
-        # Pre-populate form with existing data
-        initial_data = {
-            'subject_name': course.subject_name,
-            'preferred_learning_style': course.preferred_learning_style
-        }
-        form = Step1Form(initial=initial_data, user=request.user)
-    
-    return render(request, 'edit_course.html', {
-        'form': form,
-        'course': course
-    })
+def edit_course(request):
+
+    return render(request, 'edit_course.html')
 

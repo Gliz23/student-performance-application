@@ -3,8 +3,15 @@ from .models import SubjectEntry
 from .models import StudyPlanQuestionnaire
 
 class Step1Form(forms.Form):
-    subject_name = forms.CharField(label="What is the name of this course?")
-    previous_scores = forms.FloatField(label="What was your previous grade in related subject?")
+    subject_name = forms.CharField(label="SubjectEntry Name")
+
+    previous_scores = forms.FloatField(
+        label="Previous Scores (%)",
+        initial=50,  # Default value matching your model
+        min_value=0,
+        max_value=100,
+        widget=forms.NumberInput(attrs={'step': '0.1'})
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -14,8 +21,11 @@ class Step1Form(forms.Form):
         name = self.cleaned_data['subject_name']
         if self.user:
             # prevent duplicates per user
-            if SubjectEntry.objects.filter(student=self.user, subject_name__iexact=name).exists():
-                raise forms.ValidationError("You have already added a course with this name.")
+            qs = SubjectEntry.objects.filter(student=self.user.student, subject_name__iexact=name)
+            if self.course:
+                qs = qs.exclude(id=self.course.id)
+            if qs.exists():
+                raise forms.ValidationError("You already have a course with this name.")  
         return name
 
     def clean_previous_scores(self):

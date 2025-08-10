@@ -1,5 +1,5 @@
 body {
-    background: radial-gradient(#2a003f, #0d001f);
+    background: radial-gradient(#ae7e04,#564014, #150e00);
     color: white;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
@@ -13,7 +13,7 @@ body {
     background: #111;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 0 40px #f0f;
+    box-shadow: 0 0 5px rgb(229, 187, 2);
     width: 400px;
 }
 
@@ -33,7 +33,7 @@ input, select, textarea {
 }
 
 button {
-    background: linear-gradient(to right, #6a00f4, #b500cc);
+    background: linear-gradient(to right,  #836d00, #6f6d04);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -43,11 +43,11 @@ button {
 }
 
 button:hover {
-    background: #8a2be2;
+    background: #ae7e04;
 }
 
 .finish-btn {
-  background: linear-gradient(to right, #6a00f4, #b500cc);
+  background: linear-gradient(to right, #836d00, #6f6d04);
   color: white;
   padding: 10px 25px;
   border-radius: 10px;
