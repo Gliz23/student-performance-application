@@ -1,2 +1,3 @@
 # Ignore the directory containing static files
 staticfiles/
+polls/notes

@@ -31,39 +31,56 @@
             <p><strong>Study Plan:</strong> {{ latest_entry.study_plan }}</p>
         </div>
         {% else %}
-            <p class="no-prediction">No prediction yet. Add a course to get started!</p>
+            <p class="no-prediction">Welcome to GoalTweaks - Achieve your academic goals today. </p>
         {% endif %}
 
         <div class="button-group">
             <a href="{% url 'create_subject_entry' %}" class="btn">Add New Course</a>
+             <a href="{% url 'create_subject_entry' %}" class="btn">Create Study Plan</a>
         </div>
 
         <section class="cards">
             <div class="card">
-                <h3>📘 Courses Summary</h3>
+                <h3>📘 Course Performace</h3>
                 <ul class="courses-list">
-                    {% for course in courses %}
+                    
                     <li>
-                        <a href="{% url 'subject_dashboard' course.id %}">
-                            {{ course.subject_name }} – {{ course.entries.first.predicted_score }}%
-                        </a>
-                        <div class="course-actions">
-                            <a href="{% url 'edit_course' course.id %}" class="edit-btn">✏️</a>
-                            <form method="post" action="{% url 'delete_course' course.id %}" onsubmit="return confirm('Are you sure?');">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-btn">🗑️</button>
-                            </form>
-                        </div>
+                       <p>
+                        Add a course and fill out a multi-step form
+                       </p>
                     </li>
-                    {% empty %}
-                    <li class="empty-message">No courses added yet.</li>
-                    {% endfor %}
+                    <li>
+                       <p>
+                        View your predicted score 
+                       </p>
+                    </li>
+                    <li>
+                       <p>
+                        Generate a study guide for the best performace
+                       </p>
+                    </li>
                 </ul>
             </div>
 
             <div class="card">
-                <h3>🔮 Latest Feedback</h3>
-                <p>{{ recent_feedback }}</p>
+                <h3>🔮 Your Plans</h3>
+                <ul class="courses-list"> 
+                    <li>
+                       <p>
+                        To achieve a goal, you need a plan
+                       </p>
+                    </li>
+                    <li>
+                       <p>
+                        Fill out the study plan form 
+                       </p>
+                    </li>
+                    <li>
+                       <p>
+                        Tweek your habits and be a high achiever
+                       </p>
+                    </li>
+                </ul>
             </div>
         </section>
 

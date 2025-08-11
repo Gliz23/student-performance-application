@@ -58,7 +58,7 @@ body {
 .button-group {
   margin: 20px 0;
   display: flex;
-  gap: 15px;
+  gap: 14rem;
   margin-bottom: 30px;
 }
 
@@ -209,11 +209,24 @@ body {
     }
     
     .main-header {
-        flex-direction: column;
         gap: 15px;
     }
     
     .cards {
         grid-template-columns: 1fr;
     }
+
+    .button-group {
+      gap: 5rem;
+    }
 }
+
+@media (max-width: 480px) {
+  .main-header {
+        flex-direction: column;
+    }
+
+    .button-group {
+      gap: 2rem;
+    }
+  }
