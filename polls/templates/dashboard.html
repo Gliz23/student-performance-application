@@ -1,48 +1,68 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ course.subject_name }} Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-</head>
-<body>
 
-  {% include 'sidebar_component.html' %}
-
+{% block content %}
     <div class="main-content">
-        <div class="dashboard-header">
-        <h1>📊 {{ course.subject_name }} Dashboard</h1>
-        <a href="{% url 'create_subject_entry' %}" class="btn">+ New Prediction</a>
-        </div>
-    
-        <div class="dashboard-container">
-            <!-- Subject Results Card -->
-            <div class="dashboard-card">
-                <h2>Course Summary</h2>
-                {% include 'subject_results_card.html' with course=course %}
+        <header class="main-header">
+            <div class="logo-container">
+                <a href="{% url 'hero' %}" class="logo-link">
+                    <img src="{% static 'images/gtlogo.png' %}" 
+                        alt="GoalTweaks Logo" 
+                        class="logo-img"/>  
+                </a>
             </div>
+            <div class="page-titles">
+                <h1 class="homepage-header">{{ user.username }}'s Goals</h1>
+            </div>
+            <div class="auth-buttons">
+                <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
+                <form action="{% url 'logout' %}" method="POST" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="auth-btn logout-btn">Logout</button>
+                </form>
+            </div>
+        </header>
 
-            <!-- Study Plan Card -->
-            <div class="dashboard-card">
-                <h2>Study Plan</h2>
-                {% if course.study_plan %}
-                    <p>{{ course.study_plan }}</p>
-                {% else %}
-                    <p>No study plan generated yet.</p>
-                    <a href="{% url 'get_guidance' course.id %}" class="btn">Generate Study Plan</a>
-                {% endif %}
+        <main class="hero-container">
+            <div class="dashboard-header">
+                <h1>📊 {{ course.subject_name }} Dashboard</h1>
+                <a href="{% url 'create_subject_entry' %}" class="btn">+ New Prediction</a>
             </div>
+        
+            <div class="dashboard-container">
+                <!-- Subject Results Card -->
+                <div class="dashboard-card">
+                    <h2>Course Summary</h2>
+                    {% include 'subject_results_card.html' with course=course %}
+                </div>
+
+                <!-- Study Guide Card -->
+                <div class="dashboard-card">
+                    <h2>Study Guide</h2>
+                    {% if course.chatbot_guidance %}
+                        <p>{{ course.chatbot_guidance }}</p>
+                    {% else %}
+                        <p>No study guide generated yet.</p>
+                        {% if course.id %}
+                            <a href="{% url 'get_guidance' course.id %}" class="btn btn-primary">
+                                Generate Guidance for {{ course.subject_name }}
+                            </a>
+                        {% else %}
+                            <p class="text-danger">Error: Course ID missing</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
 
              <!-- Performance Charts Card -->
-            <div class="dashboard-card">
-                <h2>Performance Analytics</h2>
-                <div class="chart-placeholder">
-                <!-- Chart will go here -->
-                <p>Performance charts coming soon!</p>
+                    <div class="dashboard-card">
+                        <h2>Performance Analytics</h2>
+                        <div class="chart-placeholder">
+                            <!-- Chart will go here -->
+                            <p>Performance charts coming soon!</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </div>
-        </div>
-        <!-- <a href="{% url 'hero' %}">← Back to Hero Section</a> -->
-</body>
-</html>
+        </main>
+    <div/>
+{% endblock %}

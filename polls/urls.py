@@ -26,8 +26,10 @@ urlpatterns = [
 
     # path('charts/', views.my_charts_view, name='my_charts'),
     
-    path('guidance/', views.get_guidance_view, name='get_guidance'),
+    path('guidance/<int:course_id>/', views.get_guidance_view, name='get_guidance'),
+    
     path("student_dashboard/", views.student_dashboard_view, name="student_dashboard"),
+    
     path('delete-course/<int:course_id>/', delete_course, name='delete_course'),
 
     path('course/<int:course_id>/edit/', views.edit_course, name='edit_course'),

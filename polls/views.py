@@ -1,3 +1,4 @@
+from django.http import Http404
 import requests
 import json
 from django.shortcuts import render, redirect
@@ -119,7 +120,7 @@ class SubjectWizard(SessionWizardView):
         except Exception as e:
             print("FastAPI prediction failed:", e)
          
-        return redirect('subject_results', subject_id=entry.id)
+        return redirect('subject_dashboard', course_id=entry.id)
     
     def post(self, request, *args, **kwargs):
         print(f"Current Step: {self.steps.current}")  # Current wizard step
@@ -127,11 +128,19 @@ class SubjectWizard(SessionWizardView):
         print("Form errors:", form.errors)  # Print actual validation errors
         return super().post(request, *args, **kwargs)
 
+
 def subject_dashboard(request, course_id):
     course = get_object_or_404(SubjectEntry, id=course_id)
+    
+    # Get the Student instance associated with the user
+    try:
+        student = request.user.student
+    except Student.DoesNotExist:
+        raise Http404("Student profile not found")
+    
     return render(request, 'dashboard.html', {
         'course': course,
-        'courses': SubjectEntry.objects.filter(student=request.user)
+        'courses': SubjectEntry.objects.filter(student=student)
     })
 
 
@@ -249,11 +258,11 @@ def hero_view(request):
 def student_dashboard_view(request):
     return render(request, 'dashboard.html')   
 
-@login_required
+@login_required         
+def get_guidance_view(request, course_id):
 
+    course = get_object_or_404(SubjectEntry, id=course_id)
 
-
-def get_guidance_view(request):
     if request.method == "POST":
         subject_name = request.POST.get("subject_name")
 
@@ -302,12 +311,12 @@ def get_guidance_view(request):
 
                 # print("Context sent to template:", {"subject": subject.subject_name, "guidance": guidance_text})
                 
-                return render(request, "get_guidance.html", {
+                return render(request, "dashboard.html", {
                     "subject": subject,
                     "guidance": guidance_text,
                     })
             else: 
-                return render(request, "get_guidance.html", {
+                return render(request, "dashboard.html", {
                     "subject": subject,
                     "error": "No guidance was returned from the system."
             })
@@ -317,7 +326,7 @@ def get_guidance_view(request):
                 "error": f"Failed to get guidance: {e}"
             })
 
-    return redirect("hero")  
+    return redirect("subject_dashboard", course_id = course.id)  
 
 
 @require_POST
