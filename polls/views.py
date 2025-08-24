@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .models import Student, SubjectEntry
+from .models import Student, SubjectEntry, CourseSpecificEntry
 from django.core.cache import cache
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
@@ -16,10 +16,9 @@ from .models import StudyPlanQuestionnaire
 
 from django.views.decorators.http import require_POST
 from .forms import Step1Form, Step2Form, Step3Form, Step4Form, Step5Form
-from .models import SubjectEntry
 from formtools.wizard.views import SessionWizardView
 from .forms import Step1Form, Step2Form, Step3Form, Step4Form, Step5Form
- 
+
 
 
 
@@ -84,18 +83,59 @@ class SubjectWizard(SessionWizardView):
             data.update(form.cleaned_data)
 
         student = self.request.user.student
+        subject_name = data.get("subject_name", "Unnamed course")
+
+        # Check if we're editing an existing course or creating a new one
+        course_id = self.request.session.get('editing_course_id')
         
-        entry = SubjectEntry.objects.create(
-            student=student,
-            subject_name=data.get("subject_name", "Unnamed course"),
-            hours_studied=data["hours_studied"],
-            previous_scores=data["previous_scores"],
-            extracurricular=data["extracurricular"],
-            sleep_hours=data["sleep_hours"],
-            question_papers=data["question_papers"],
-            motivation=data.get("motivation", "Medium"),
-            preferred_learning_style=data.get("preferred_learning_style", "None"),
-        )
+        if course_id:
+            # Editing an existing course - get the course and create a prediction entry
+            subject = get_object_or_404(SubjectEntry, id=course_id, student=student)
+            
+            # Create a new prediction entry
+            entry = CourseSpecificEntry.objects.create(
+                subject=subject,
+                hours_studied=data["hours_studied"],
+                previous_scores=data["previous_scores"],
+                extracurricular=data["extracurricular"],
+                sleep_hours=data["sleep_hours"],
+                question_papers=data["question_papers"],
+                motivation=data.get("motivation", "Medium"),
+                preferred_learning_style=data.get("preferred_learning_style", "None"),
+            )
+            
+            # Clear the editing flag from session
+            if 'editing_course_id' in self.request.session:
+                del self.request.session['editing_course_id']
+                
+            redirect_id = subject.id
+        else:
+            # Creating a new course
+            subject = SubjectEntry.objects.create(
+                student=student,
+                subject_name=subject_name,
+                hours_studied=data["hours_studied"],
+                previous_scores=data["previous_scores"],
+                extracurricular=data["extracurricular"],
+                sleep_hours=data["sleep_hours"],
+                question_papers=data["question_papers"],
+                motivation=data.get("motivation", "Medium"),
+                preferred_learning_style=data.get("preferred_learning_style", "None"),
+            )
+
+            # Also create a prediction entry for consistency
+            entry = CourseSpecificEntry.objects.create(
+                subject=subject,
+                hours_studied=data["hours_studied"],
+                previous_scores=data["previous_scores"],
+                extracurricular=data["extracurricular"],
+                sleep_hours=data["sleep_hours"],
+                question_papers=data["question_papers"],
+                motivation=data.get("motivation", "Medium"),
+                preferred_learning_style=data.get("preferred_learning_style", "None"),
+            )
+        
+            redirect_id = subject.id
 
         # 🔗 Send to FastAPI
         payload = {
@@ -108,24 +148,30 @@ class SubjectWizard(SessionWizardView):
 
         try:
             response = requests.post(FASTAPI_PREDICTION_URL, json=payload)
-            response.raise_for_status()  # Raise an error for bad responses
+            response.raise_for_status()
             result = response.json()
+            
+            # Update both the prediction entry and the subject entry
+            entry.predicted_score = result.get('predicted_score')
+            entry.save()
+            
+            # Also update the main subject entry with the latest prediction
+            subject.predicted_score = result.get('predicted_score')
+            subject.save()
 
             # Log the result to see what is being returned
-            print("FastAPI Response:", result)
-            print("Sending Payload:", payload)
-            entry.predicted_score = result.get('predicted_score')
-            entry.study_plan = result.get('study_plan')
-            entry.save()
+            # print("FastAPI Response:", result)
+            # print("Sending Payload:", payload)
+
         except Exception as e:
             print("FastAPI prediction failed:", e)
          
-        return redirect('subject_dashboard', course_id=entry.id)
+        return redirect('subject_dashboard', course_id=redirect_id)
     
     def post(self, request, *args, **kwargs):
-        print(f"Current Step: {self.steps.current}")  # Current wizard step
+        print(f"Current Step: {self.steps.current}")  
         form = self.get_form()
-        print("Form errors:", form.errors)  # Print actual validation errors
+        print("Form errors:", form.errors)  
         return super().post(request, *args, **kwargs)
 
 
@@ -140,7 +186,8 @@ def subject_dashboard(request, course_id):
     
     return render(request, 'dashboard.html', {
         'course': course,
-        'courses': SubjectEntry.objects.filter(student=student)
+        'courses': SubjectEntry.objects.filter(student=student),
+        'current_page': 'dashboard'
     })
 
 
@@ -251,6 +298,7 @@ def hero_view(request):
         'latest_score': latest_score,
         'recent_feedback': recent_feedback,
         'courses': courses,
+        'current_page': 'hero'
     })
 
 
@@ -258,75 +306,151 @@ def hero_view(request):
 def student_dashboard_view(request):
     return render(request, 'dashboard.html')   
 
-@login_required         
-def get_guidance_view(request, course_id):
+# @login_required         
+# def get_guidance_view(request, course_id):
 
+#     course = get_object_or_404(SubjectEntry, id=course_id)
+
+#     # print("Button clicked for guidance")
+
+#     if request.method == "POST":
+        
+#         subject_name = request.POST.get("subject_name")
+        
+#         print(subject_name)
+#         if not subject_name:
+#             return render(request, "get_guidance.html", {
+#                 "error": "No course name (ID) provided."
+#             })
+
+#         # Get current student
+#         student = Student.objects.filter(user=request.user).first()
+
+#         # Fetch the subject entry using subject_name
+#         subject = SubjectEntry.objects.filter(subject_name=subject_name, student=student).first()
+
+#         if not subject:
+#             return render(request, "get_guidance.html", {
+#                 "error": f"No course found with subject name '{subject_name}'."
+#             })
+        
+
+#         # Prepare payload for FastAPI
+#         payload = {
+#             "msg": "generate_guidance",
+#             "user_id": str(subject.subject_name),
+#             "predicted_score": subject.predicted_score,
+#             "study_hours": subject.hours_studied,
+#             "motivation_level": str(subject.motivation),
+#             "preferred_learning_style": str(subject.preferred_learning_style),  
+#         }
+
+#         print("Sending to FastAPI:", json.dumps(payload, indent=2))
+
+#         try:
+#             response = requests.post("http://127.0.0.1:8000/chatbot-advice", json=payload)
+#             response.raise_for_status()
+#             result = response.json()
+
+
+#             guidance_text = result.get("response")
+#             # print(guidance_text)
+#             # print("Response:", response.status_code, response.text)
+
+#             if guidance_text:
+#                 subject.chatbot_guidance = guidance_text
+#                 subject.save()
+
+#                 # print("Context sent to template:", {"subject": subject.subject_name, "guidance": guidance_text})
+                
+#                 return render(request, "dashboard.html", {
+#                     "subject": subject,
+#                     "guidance": guidance_text,
+#                     })
+#             else: 
+#                 return render(request, "dashboard.html", {
+#                     "subject": subject,
+#                     "error": "No guidance was returned from the system."
+#             })
+
+#         except requests.RequestException as e:
+#             return render(request, "get_guidance.html", {
+#                 "error": f"Failed to get guidance: {e}"
+#             })
+
+#     return redirect("subject_dashboard", course_id = course.id)  
+
+
+@login_required
+def get_guidance_view(request, course_id):
     course = get_object_or_404(SubjectEntry, id=course_id)
 
     if request.method == "POST":
-        subject_name = request.POST.get("subject_name")
 
-        if not subject_name:
-            return render(request, "get_guidance.html", {
-                "error": "No course name (ID) provided."
-            })
-
-        # Get current student
         student = Student.objects.filter(user=request.user).first()
-
-        # Fetch the subject entry using subject_name
-        subject = SubjectEntry.objects.filter(subject_name=subject_name, student=student).first()
-
-        if not subject:
-            return render(request, "get_guidance.html", {
-                "error": f"No course found with subject name '{subject_name}'."
+        if not student:
+            return render(request, "dashboard.html", {
+                "error": "Student profile not found.",
+                "course": course,
             })
-        
 
-        # Prepare payload for FastAPI
+        # Use the course fetched earlier (course_id) instead of querying again
+        if not course:
+            return render(request, "dashboard.html", {
+                "error": f"Course not found.",
+                "course": course,
+            })
+
+        # Prepare payload for FastAPI (corrected fields)
         payload = {
-            "msg": "generate_guidance",
-            "user_id": str(subject.subject_name),
-            "predicted_score": subject.predicted_score,
-            "study_hours": subject.hours_studied,
-            "motivation_level": str(subject.motivation),
-            "preferred_learning_style": str(subject.preferred_learning_style),  
+            "subject": str(course.subject_name),
+            "user_id": str(request.user.id),  
+            "predicted_score": course.predicted_score,
+            "subject_weekly_study_hours": course.hours_studied,
+            "motivation_level": str(course.motivation),
+            "preferred_learning_style": str(course.preferred_learning_style),
         }
 
         print("Sending to FastAPI:", json.dumps(payload, indent=2))
 
         try:
-            response = requests.post("http://127.0.0.1:8000/chatbot-advice", json=payload)
-            response.raise_for_status()
+            # Send to FastAPI (adjust URL if needed)
+            FASTAPI_URL = "http://127.0.0.1:8000/chatbot-advice"  
+            response = requests.post(FASTAPI_URL, json=payload, timeout=20)  
+            response.raise_for_status()  
             result = response.json()
+            print("This is your result")
+            print(result)
 
-
-            guidance_text = result.get("response")
-            # print(guidance_text)
-            # print("Response:", response.status_code, response.text)
-
-            if guidance_text:
-                subject.chatbot_guidance = guidance_text
-                subject.save()
-
-                # print("Context sent to template:", {"subject": subject.subject_name, "guidance": guidance_text})
-                
+            guidance_text = result.get("study_guide")
+            
+            if not guidance_text:
                 return render(request, "dashboard.html", {
-                    "subject": subject,
-                    "guidance": guidance_text,
-                    })
-            else: 
-                return render(request, "dashboard.html", {
-                    "subject": subject,
-                    "error": "No guidance was returned from the system."
+                    "error": "Empty response from guidance service.",
+                    "course": course,
+                    "courses": SubjectEntry.objects.filter(student=request.user.student),
+                })
+
+            # Save guidance to the course
+            course.study_guide = guidance_text
+            course.save()
+
+            return render(request, "dashboard.html", {
+                "course": course,
+                "guidance": guidance_text,
+                "courses": SubjectEntry.objects.filter(student=request.user.student),
             })
 
-        except requests.RequestException as e:
-            return render(request, "get_guidance.html", {
-                "error": f"Failed to get guidance: {e}"
+        except requests.exceptions.RequestException as e:
+            return render(request, "dashboard.html", {
+                "error": f"Failed to connect to guidance service: {str(e)}",
+                "course": course,
+                "courses": SubjectEntry.objects.filter(student=request.user.student),
             })
 
-    return redirect("subject_dashboard", course_id = course.id)  
+    # If not POST, redirect to dashboard
+    return redirect("subject_dashboard", course_id=course.id)
+
 
 
 @require_POST
@@ -406,8 +530,39 @@ def questionnaire_view(request):
 #     return render(request, 'performance/questionnaire.html', {'form': form})
  
 
+
 @login_required
-def edit_course(request):
+def edit_course(request, course_id):
+    # Store the course ID in session to indicate we're editing
+    request.session['editing_course_id'] = course_id
+    
+    # Redirect to the wizard which will detect we're in edit mode
+    return redirect('create_subject_entry')  
 
-    return render(request, 'edit_course.html')
 
+@login_required
+def course_history_dashboard(request, course_id):
+    course = get_object_or_404(SubjectEntry, id=course_id, student=request.user.student)
+    
+    # Get all prediction entries for this course, ordered by most recent
+    prediction_entries = course.entries.all().order_by('-created_at')
+    
+    # Prepare data for charts with proper fallbacks
+    dates = [entry.created_at.strftime('%Y-%m-%d') for entry in prediction_entries]
+    scores = [float(entry.predicted_score) if entry.predicted_score else 0 for entry in prediction_entries]
+    hours_studied = [float(entry.hours_studied) for entry in prediction_entries]
+    
+    # Convert to JSON strings for the template
+    dates_json = json.dumps(dates)
+    scores_json = json.dumps(scores)
+    hours_json = json.dumps(hours_studied)
+
+    return render(request, 'course_history_dashboard.html', {
+        'course': course,
+        'prediction_entries': prediction_entries,
+        'dates': dates_json,
+        'scores': scores_json,
+        'hours_studied': hours_json,
+        'courses': SubjectEntry.objects.filter(student=request.user.student),
+        'current_page': 'history'
+    })

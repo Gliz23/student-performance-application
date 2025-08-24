@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="study-guide-card">
+    {% if course.study_guide %}
+        <div class="guidance-content">{{ course.study_guide|safe }}</div>  <!-- Render HTML safely -->
+    {% elif error %}
+        <p class="text-danger">{{ error }}</p>
+    {% else %}
+        <p>No study guide generated yet.</p>
+    {% endif %}
+
+    <form method="POST" action="{% url 'get_guidance' course.id %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">
+            Generate Guidance for {{ course.subject_name }}
+        </button>
+    </form>
+   
+</div>

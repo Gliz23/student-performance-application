@@ -6,10 +6,92 @@
     --toggle-z-index: 1001;
 }
 
+/* Base font size for better responsiveness */
+html {
+    font-size: 16px; /* Base size (1rem = 16px) */
+}
+
+/* Headers */
+h1 {
+    font-size: 2.5rem;    /* 40px */
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 2rem;      /* 32px */
+    font-weight: 500;
+    margin-bottom: 0.875rem;
+}
+
+h3 {
+    font-size: 1.75rem;   /* 28px */
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+}
+
+h4 {
+    font-size: 1.5rem;    /* 24px */
+    font-weight: 300;
+    margin-bottom: 0.625rem;
+}
+
+h5 {
+    font-size: 1.25rem;   /* 20px */
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+}
+
+h6 {
+    font-size: 1.125rem;  /* 18px */
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+/* Paragraphs */
+p {
+    font-size: 1rem;      /* 16px */
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Lead paragraph (for introductory text) */
+.lead {
+    font-size: 1.125rem;  /* 18px */
+    line-height: 1.7;
+}
+
+/* Small text */
+small, .text-sm {
+    font-size: 0.875rem;  /* 14px */
+    line-height: 1.5;
+}
+
+/* Extra small text */
+.text-xs {
+    font-size: 0.75rem;   /* 12px */
+    line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h1 { font-size: 2rem; }      /* 32px on mobile */
+    h2 { font-size: 1.75rem; }   /* 28px on mobile */
+    h3 { font-size: 1.5rem; }    /* 24px on mobile */
+    h4 { font-size: 1.25rem; }   /* 20px on mobile */
+    
+    .lead { font-size: 1rem; }   /* 16px on mobile */
+}
+
 .layout-container {
-    display: flex;
+    min-width: 100vw;
     min-height: 100vh;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .sidebar {
@@ -55,12 +137,6 @@
 }
 
 
-
-.sidebar.visible + .main-content {
-    margin-left: 300px;
-}
-
-
 /* Sidebar content styles */
 .sidebar-header {
     display: flex;
@@ -74,10 +150,23 @@
 
 .main-content {
     transition: margin-left 0.3s ease;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sidebar.visible + .main-content {
+    margin-left: 300px;
+}
+
+.add-course-btn {
+    background-color: #75ed7f;
 }
 
 .add-section-btn {
     background-color: #FFD700;
+}
+
+.add-section-btn, .add-course-btn {
     color: #000;
     border: none;
     padding: 5px 10px;
@@ -106,4 +195,80 @@
     .sidebar.visible ~ .toggle-sidebar {
         left: calc(100% - 50px);
     }
+}
+
+/* History Dashboard Styles */
+.history-container {
+    padding: 100px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;               
+    flex-direction: column;      
+    align-items: center;   
+}
+
+.chart-card {
+    height: 550px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-container {
+    height: 500px;
+    position: relative;
+    background: white;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.history-table th {
+    background-color: #f8f9fa2a;
+    font-weight: 600;
+}
+
+.history-table tr:hover {
+    background-color: #4f7194;
+}
+
+.score-value {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.no-data {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.no-entries {
+    text-align: center;
+    padding: 30px;
+    color: #6c757d;
+}
+
+.view-btn {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.view-btn:hover {
+    text-decoration: underline;
 }

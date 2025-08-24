@@ -2,7 +2,7 @@
 
 <div class="sidebar-content">
     <div class="sidebar-header">
-        <h3>My Goals</h3>
+        <h4>My Goals</h4>
         <button class="add-section-btn" id="addSectionBtn">+ Add Section</button>
     </div>
     
@@ -16,7 +16,6 @@
                 <li class="course-item">
                     <a href="{% url 'subject_dashboard' course.id %}" class="course-link">
                         <span class="course-name">{{ course.subject_name }}</span>
-                        <span class="course-score">{{ course.entries.first.predicted_score }}%</span>
                     </a>
                     <div class="course-actions">
                         <a href="{% url 'edit_course' course.id %}" class="edit-btn">✏️</a>

@@ -8,7 +8,34 @@ class Student(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+#This is the database per course.
+class CourseSpecificEntry(models.Model):
+    # Link to the parent course
+    subject = models.ForeignKey('SubjectEntry', on_delete=models.CASCADE, related_name='entries')
     
+    # Entry-specific data
+    hours_studied = models.FloatField(default=0)
+    previous_scores = models.FloatField(default=50)
+    extracurricular = models.CharField(max_length=10, choices=[('Yes', 'Yes'), ('No', 'No')], default='No')
+    sleep_hours = models.FloatField(default=8)
+    question_papers = models.IntegerField(default=0)
+    motivation = models.CharField(max_length=255, default='Medium')
+    preferred_learning_style = models.TextField(default='None')
+
+    # Outputs
+    predicted_score = models.FloatField(null=True, blank=True)
+    study_guide = models.TextField(null=True, blank=True)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.subject.subject_name} - {self.created_at.strftime('%Y-%m-%d')}"
+
+
+#This represents the databse for all courses.
 class SubjectEntry(models.Model):
     # Link to the user (student)
     student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='subject_entries')

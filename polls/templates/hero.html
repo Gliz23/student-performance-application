@@ -12,7 +12,7 @@
             </a>
         </div>
         <div class="page-titles">
-            <h1 class="homepage-header">{{ user.username }}'s Goals</h1>
+            <h3 class="homepage-header">{{ user.username }}'s Goals</h3>
         </div>
         <div class="auth-buttons">
             <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
@@ -27,7 +27,7 @@
         
         {% if latest_entry %}
         <div class="prediction-card">
-            <h2>📊 Predicted Score: {{ latest_entry.predicted_score }}%</h2>
+            <h3>📊 Predicted Score: {{ latest_entry.predicted_score }}%</h3>
             <p><strong>Study Plan:</strong> {{ latest_entry.study_plan }}</p>
         </div>
         {% else %}
@@ -41,7 +41,7 @@
 
         <section class="cards">
             <div class="card">
-                <h3>📘 Course Performace</h3>
+                <h4>📘 Course Performace</h4>
                 <ul class="courses-list">
                     
                     <li>
@@ -63,7 +63,7 @@
             </div>
 
             <div class="card">
-                <h3>🔮 Your Plans</h3>
+                <h4>🔮 Your Plans</h4>
                 <ul class="courses-list"> 
                     <li>
                        <p>
@@ -85,7 +85,7 @@
         </section>
 
         <section class="preferred-learning-style">
-            <h3>Preferred Learning Style</h3>
+            <h4>Preferred Learning Style</h4>
             <p>{{ latest_entry.preferred_learning_style|default:"Not specified" }}</p>
         </section>
     </main>

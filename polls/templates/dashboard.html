@@ -12,10 +12,10 @@
                 </a>
             </div>
             <div class="page-titles">
-                <h1 class="homepage-header">{{ user.username }}'s Goals</h1>
+                <h3 class="homepage-header">{{ user.username }}'s Goals</h3>
             </div>
             <div class="auth-buttons">
-                <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
+                <a href="{% url 'course_history' course.id %}" class="auth-btn">View History</a>
                 <form action="{% url 'logout' %}" method="POST" class="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="auth-btn logout-btn">Logout</button>
@@ -25,43 +25,22 @@
 
         <main class="hero-container">
             <div class="dashboard-header">
-                <h1>📊 {{ course.subject_name }} Dashboard</h1>
-                <a href="{% url 'create_subject_entry' %}" class="btn">+ New Prediction</a>
+                <h4>📊 {{ course.subject_name }} Dashboard</h4>
+                <a href="{% url 'edit_course' course.id %}" class="btn">+ New Prediction</a>
             </div>
         
             <div class="dashboard-container">
                 <!-- Subject Results Card -->
-                <div class="dashboard-card">
-                    <h2>Course Summary</h2>
+                <div class="results-card dashboard-card">
+                    <h4>Course Summary</h4>
                     {% include 'subject_results_card.html' with course=course %}
                 </div>
 
                 <!-- Study Guide Card -->
-                <div class="dashboard-card">
-                    <h2>Study Guide</h2>
-                    {% if course.chatbot_guidance %}
-                        <p>{{ course.chatbot_guidance }}</p>
-                    {% else %}
-                        <p>No study guide generated yet.</p>
-                        {% if course.id %}
-                            <a href="{% url 'get_guidance' course.id %}" class="btn btn-primary">
-                                Generate Guidance for {{ course.subject_name }}
-                            </a>
-                        {% else %}
-                            <p class="text-danger">Error: Course ID missing</p>
-                        {% endif %}
-                    {% endif %}
+                <div class="guidance-card dashboard-card">
+                    {% include 'study_guide_card.html' with course=course courses=courses guidance=guidance error=error %}
                 </div>
 
-             <!-- Performance Charts Card -->
-                    <div class="dashboard-card">
-                        <h2>Performance Analytics</h2>
-                        <div class="chart-placeholder">
-                            <!-- Chart will go here -->
-                            <p>Performance charts coming soon!</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
     <div/>

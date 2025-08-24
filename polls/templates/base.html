@@ -12,13 +12,14 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/hero.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles_preview.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
     <div class="layout-container">
         
         <aside class="sidebar" id="sidebar">
             
-            {% include 'sidebar_component.html' %}
+            {% include 'sidebar_component.html' with courses=courses current_page=current_page %}
         </aside>
 
         <!-- Main content area -->

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="edit-course-container">
-    <h2>Edit Course: {{ course.subject_name }}</h2>
+    <h3>Edit Course: {{ course.subject_name }}</h3>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

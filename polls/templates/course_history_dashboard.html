@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-content">
+    <header class="main-header">
+        <div class="logo-container">
+            <a href="{% url 'hero' %}" class="logo-link">
+                <img src="{% static 'images/gtlogo.png' %}" alt="GoalTweaks Logo" class="logo-img"/>  
+            </a>
+        </div>
+        <div class="page-titles">
+            <h3 class="homepage-header">{{ user.username }}'s Goals</h3>
+        </div>
+        <div class="auth-buttons">
+            <a href="{% url 'subject_dashboard' course.id %}" class="auth-btn dashboard-btn">{{ course.subject_name}} Dashboard</a>
+            <form action="{% url 'logout' %}" method="POST" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="auth-btn logout-btn">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="history-container">
+        <div class="dashboard-header">
+            <h4>{{ course.subject_name }} Prediction History Dashboard</h2>
+        </div>
+
+        <!-- Performance Chart -->
+        <div class="dashboard-card chart-card">
+            <h4>Performance Trend</h3>
+            <!-- In the chart container div -->
+            <div class="chart-container">
+                <canvas id="performanceChart" width="600" height="400"
+                        data-chart='{"labels": {{ dates|safe }}, "scores": {{ scores|safe }}, "hours": {{ hours_studied|safe }}}'></canvas>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="{% url 'edit_course' course.id %}" class="btn">+ New Prediction</a>
+            <a href="{% url 'subject_dashboard' course.id %}" class="btn">Back to Overview</a>
+        </div>
+
+        <!-- Historical Data Table -->
+        <div class="dashboard-card">
+            <h3>Prediction History</h3>
+            <div class="table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Hours Studied</th>
+                            <th>Previous Scores</th>
+                            <th>Extracurricular</th>
+                            <th>Sleep Hours</th>
+                            <th>Question Papers</th>
+                            <th>Predicted Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in prediction_entries %}
+                        <tr>
+                            <td>{{ entry.created_at|date:"M d, Y" }}</td>
+                            <td>{{ entry.hours_studied }}</td>
+                            <td>{{ entry.previous_scores }}%</td>
+                            <td>{{ entry.extracurricular }}</td>
+                            <td>{{ entry.sleep_hours }}</td>
+                            <td>{{ entry.question_papers }}</td>
+                            <td class="{% if entry.predicted_score %}score-value{% else %}no-data{% endif %}">
+                                {% if entry.predicted_score %}
+                                    {{ entry.predicted_score }}%
+                                {% else %}
+                                    Not calculated
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="#" class="view-btn" data-entry-id="{{ entry.id }}">View Details</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="no-entries">No prediction entries yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+
+
+
+<!-- Include Chart.js and your external script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/course_history.js' %}"></script>
+
+
+{% endblock %}

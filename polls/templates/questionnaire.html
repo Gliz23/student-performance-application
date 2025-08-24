@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Study Plan Questionnaire</h2>
+<h3>Study Plan Questionnaire</h3>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

@@ -32,6 +32,8 @@ urlpatterns = [
     
     path('delete-course/<int:course_id>/', delete_course, name='delete_course'),
 
-    path('course/<int:course_id>/edit/', views.edit_course, name='edit_course'),
+    path('course/edit/<int:course_id>/', views.edit_course, name='edit_course'),
+
+    path('course/<int:course_id>/history/', views.course_history_dashboard, name='course_history'),
 ]
 
