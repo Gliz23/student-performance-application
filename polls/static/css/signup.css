@@ -1,4 +1,4 @@
-body {
+/* body {
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -8,14 +8,14 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
+} */
 
  
 .container {
     border-radius: 2rem;
     text-align: center;
     z-index: 1; 
-    color: white;   
+    color: #2d3748;   
 }
 
 .sign-upcard {
@@ -24,13 +24,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(255, 255, 255, 0.95);
     padding: 40px;
     border-radius: 20px;
     width: 300px;
     margin: auto;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-
+    box-shadow: 0 8px 32px rgba(49, 130, 206, 0.2);
+    border: 1px solid rgba(49, 130, 206, 0.1);
 }
 
 form {
@@ -45,16 +45,16 @@ form input {
     width: 80%;
     padding: 12px;
     margin: 10px 5px;
-    background-color: #1a1a1a;
-    border: 1px solid #555;
-    color: white;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e0;
+    color: #2d3748;
     border-radius: 10px;
 }
 
 form button {
     width: 50%;
     padding: 12px;
-    background: linear-gradient(to right, #806502, #c1b136ec);
+    background: linear-gradient(to right, #3182ce, #2c5aa0);
     border: none;
     color: white;
     border-radius: 12px;
@@ -85,15 +85,14 @@ form button:hover {
 }
 
 h3 {
-
     margin: 5px;
-    color: white;
+    color: #2d3748;
 }
 
 .login-link {
     margin-top: 10px;
-    color: rgb(139, 121, 0);
+    color: #3182ce;
 }
 .sign-upcard a {
-    color :#555
+    color: #4a5568;
 }

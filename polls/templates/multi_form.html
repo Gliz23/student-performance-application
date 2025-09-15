@@ -8,42 +8,67 @@
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 
     <link rel="stylesheet" href="{% static 'css/add_subject.css' %}">
+    <script src="{% static 'js/form-validation.js' %}" defer></script>
 </head>
 <body>
     <div class="wrapper">
         <div class="form-box">
-            <h3>Part A</h3>
-            <p><strong>EDUCATIONAL INFORMATION</strong></p>
+            <h3>{{ step_title|default:"Part A" }}</h3>
+            <p><strong>{{ step_description|default:"EDUCATIONAL INFORMATION" }}</strong></p>
+
+            <!-- Hidden data for JavaScript validation -->
+            {% if user.is_authenticated and user.student %}
+                <script id="existing-subjects-data" type="application/json">
+                    [{% for subject in user.student.subject_entries.all %}"{{ subject.subject_name|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+                </script>
+            {% endif %}
 
             <form method="post">
                 {% csrf_token %}
                 {{ wizard.management_form }}
                 
                 <div class="form-step">
-                    <p>Question {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
-                    {{ wizard.form.non_field_errors }}
-                    {{ wizard.form.as_p }}
+                    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+                    
+                    {% if wizard.form.non_field_errors %}
+                        <div class="error-section">
+                            <h4>Please fix the following errors:</h4>
+                            {{ wizard.form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    {% for field in wizard.form %}
+                        <div class="form-field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}
+                                {{ field.errors }}
+                            {% endif %}
+                            {% if field.help_text %}
+                                <div class="help-text">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="buttons">
-                    {% if wizard.steps.first %}
-                        <button type="submit">Next</button>
-                    {% elif wizard.steps.last %}
-                        <button type="submit" class="finish-btn">Finish</button>
+                    {% if wizard.steps.prev %}
+                        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">← Back</button>
+                    {% endif %}
+                    
+                    {% if wizard.steps.next %}
+                        <button type="submit">Next →</button>
                     {% else %}
-                        {% if wizard.steps.prev %}
-                            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">← Previous</button>
-                        {% endif %}
-                        <button type="submit">Next</button>
+                        <button type="submit" class="finish-btn">Finish</button>
                     {% endif %}
                 </div>
 
-                <div style="color:red;">
-                    {% if wizard.form.errors %}
+                {% if wizard.form.errors %}
+                    <div class="error-section">
                         <h4>Form Errors:</h4>
                         {{ wizard.form.errors }}
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </form>
         </div>
     </div>

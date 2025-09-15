@@ -1,57 +1,202 @@
 body {
-    background: radial-gradient(#ae7e04,#564014, #150e00);
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
     margin: 0;
+    padding: 20px;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    background: #f7fafc;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .wrapper {
-    background: #111;
+    background: #ffffff;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 0 5px rgb(229, 187, 2);
-    width: 400px;
+    box-shadow: 0 8px 32px rgba(49, 130, 206, 0.2);
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(49, 130, 206, 0.1);
 }
 
 .form-box h3, p {
     text-align: center;
-    color: #ffdbff;
+    color: #2d3748;
+}
+
+.form-step {
+    margin-bottom: 20px;
+}
+
+.form-step p {
+    background: #e2e8f0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 20px;
+}
+
+.error-section {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fed7d7;
+    border: 1px solid #fc8181;
+    border-radius: 8px;
+    color: #c53030;
+}
+
+.error-section h4 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+/* Field-specific error styling */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+    animation: shake 0.5s ease-in-out;
+}
+
+.errorlist li {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 4px solid #e53e3e;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2);
+}
+
+.errorlist li:before {
+    margin-right: 8px;
+}
+
+/* Input field error state */
+input.error, select.error, textarea.error {
+    border-color: #e53e3e;
+    background-color: #fff5f5;
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+    animation: errorPulse 0.5s ease-in-out;
+}
+
+/* Success state for valid inputs */
+input.success, select.success, textarea.success {
+    border-color: #38a169;
+    background-color: #f0fff4;
+    box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
+}
+
+/* Animation for errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes errorPulse {
+    0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(229, 62, 62, 0.1); }
+    100% { box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1); }
+}
+
+/* Blocked button state */
+button:disabled {
+    background: #cbd5e0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Form validation message */
+.form-error-message {
+    margin-bottom: 20px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form validation styles */
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.help-text {
+    font-size: 12px;
+    color: #718096;
+    margin-top: 4px;
 }
 
 input, select, textarea {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    background: #222;
-    color: #fff;
-    border: 1px solid #555;
+    background: #ffffff;
+    color: #2d3748;
+    border: 1px solid #cbd5e0;
     border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 button {
-    background: linear-gradient(to right,  #836d00, #6f6d04);
+    background: linear-gradient(to right, #3182ce, #2c5aa0);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 10px;
-    margin-top: 20px;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    flex: 0 0 auto;
 }
 
 button:hover {
-    background: #ae7e04;
+    background: #2c5aa0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
 }
 
 .finish-btn {
-  background: linear-gradient(to right, #836d00, #6f6d04);
-  color: white;
-  padding: 10px 25px;
-  border-radius: 10px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
+    background: linear-gradient(to right, #38a169, #2f855a) !important;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.finish-btn:hover {
+    background: #2f855a !important;
 }

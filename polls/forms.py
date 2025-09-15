@@ -3,35 +3,60 @@ from .models import SubjectEntry
 from .models import StudyPlanQuestionnaire
 
 class Step1Form(forms.Form):
-    subject_name = forms.CharField(label="SubjectEntry Name")
+    subject_name = forms.CharField(
+        label="Subject Name",
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter subject name (e.g., Mathematics, Physics)',
+            'class': 'form-control'
+        })
+    )
 
     previous_scores = forms.FloatField(
-        label="Previous Scores (%)",
-        initial=50,  # Default value matching your model
+        label="Previous Scores (%)",  
         min_value=0,
         max_value=100,
-        widget=forms.NumberInput(attrs={'step': '0.1'})
+        widget=forms.NumberInput(attrs={
+            'step': '0.1',
+            'placeholder': '50.0',
+            'class': 'form-control'
+        })
     )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.course = kwargs.pop('course', None)
         super().__init__(*args, **kwargs)
 
     def clean_subject_name(self):
-        name = self.cleaned_data['subject_name']
-        if self.user:
-            # prevent duplicates per user
-            qs = SubjectEntry.objects.filter(student=self.user.student, subject_name__iexact=name)
+        name = self.cleaned_data['subject_name'].strip()
+        
+        if not name:
+            raise forms.ValidationError("Subject name cannot be empty.")
+        
+        if self.user and hasattr(self.user, 'student'):
+            # Check for duplicate subject names for this user
+            qs = SubjectEntry.objects.filter(
+                student=self.user.student, 
+                subject_name__iexact=name
+            )
+            
+            # If we're editing a course, exclude the current course from the check
             if self.course:
                 qs = qs.exclude(id=self.course.id)
+            
             if qs.exists():
-                raise forms.ValidationError("You already have a course with this name.")  
+                raise forms.ValidationError(
+                    f"You already have a subject named '{name}'. "
+                    "Please choose a different name or edit the existing subject."
+                )
+        
         return name
 
     def clean_previous_scores(self):
         data = self.cleaned_data['previous_scores']
-        if not (0 < data <= 100):
-            raise forms.ValidationError("Hours studied must be between 0 to 100.")
+        if not (0 <= data <= 100):
+            raise forms.ValidationError("Previous scores must be between 0 and 100.")
         return data
 
 class Step2Form(forms.Form):

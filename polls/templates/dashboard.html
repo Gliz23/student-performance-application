@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<script src="{% static 'js/dark-mode.js' %}" defer></script>
+
     <div class="main-content">
         <header class="main-header">
             <div class="logo-container">
@@ -14,18 +17,25 @@
             <div class="page-titles">
                 <h3 class="homepage-header">{{ user.username }}'s Goals</h3>
             </div>
-            <div class="auth-buttons">
-                <a href="{% url 'course_history' course.id %}" class="auth-btn">View History</a>
-                <form action="{% url 'logout' %}" method="POST" class="logout-form">
-                    {% csrf_token %}
-                    <button type="submit" class="auth-btn logout-btn">Logout</button>
-                </form>
+            <div class="header-actions">
+                <div class="auth-buttons">
+                    <a href="{% url 'course_history' course.id %}" class="auth-btn">View History</a>
+                    <form action="{% url 'logout' %}" method="POST" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="auth-btn logout-btn">Logout</button>
+                    </form>
+                </div>
+                <!-- Dark mode toggle -->
+                <div class="dark-mode-toggle-container">
+                    <span class="dark-mode-label">Dark Mode</span>
+                    <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+                </div>
             </div>
         </header>
 
-        <main class="hero-container">
+        <main class="history-container">
             <div class="dashboard-header">
-                <h4>📊 {{ course.subject_name }} Dashboard</h4>
+                <h4> {{ course.subject_name }} Dashboard</h4>
                 <a href="{% url 'edit_course' course.id %}" class="btn">+ New Prediction</a>
             </div>
         

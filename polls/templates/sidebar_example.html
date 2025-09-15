@@ -1,0 +1,168 @@
+<!-- GoalTweaks Header Template -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalTweaks Header</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/dark-mode.js' %}" defer></script>
+    <script src="{% static 'js/sidebar.js' %}" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="goaltweaks-header">
+        <div class="header-left">
+            <a href="{% url 'home' %}" class="logo">
+                <svg width="16" height="16" viewBox="0 0 16 `16" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Student Performance
+            </a>
+        </div>
+        
+        <div class="header-right">
+            <!-- Auth Buttons -->
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="auth-btn">Profile</a>
+                <a href="{% url 'logout' %}" class="auth-btn">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="auth-btn">Sign In</a>
+                <a href="{% url 'signup' %}" class="auth-btn primary">Sign Up</a>
+            {% endif %}
+            
+            <!-- Dark Mode Toggle -->
+            <div class="dark-mode-toggle-container">
+                <span class="dark-mode-label">Dark Mode</span>
+                <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar" aria-label="Main navigation">
+        <div class="sidebar-content">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <h2>Navigation</h2>
+            </div>
+
+            <!-- Main Navigation -->
+            <nav aria-label="Main navigation">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-title">Main</h3>
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'dashboard' %}" class="sidebar-nav-link active">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'subjects' %}" class="sidebar-nav-link">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                </svg>
+                                Subjects
+                            </a>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'performance' %}" class="sidebar-nav-link">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                                </svg>
+                                Performance
+                            </a>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'study_plan' %}" class="sidebar-nav-link">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14,2 14,8 20,8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10,9 9,9 8,9"></polyline>
+                                </svg>
+                                Study Plan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-title">Tools</h3>
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'guidance' %}" class="sidebar-nav-link">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                AI Guidance
+                            </a>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'analytics' %}" class="sidebar-nav-link">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                                Analytics
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-section-title">Account</h3>
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-nav-item">
+                            <a href="{% url 'settings' %}" class="sidebar-nav-link">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Toggle Button -->
+    <button id="toggleSidebar" class="toggle-sidebar" aria-label="Toggle navigation sidebar">
+        <!-- SVG icon will be inserted by JavaScript -->
+    </button>
+
+    <!-- Overlay for mobile -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="layout-container">
+            <!-- Your main content here -->
+            <div class="card">
+                <h1> Design</h1>
+                <button class="btn primary">Primary Action</button>
+                <button class="btn secondary">Secondary Action</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Keyboard Shortcuts Info (Optional) -->
+    <div class="shortcuts-info" style="position: fixed; bottom: 20px; right: 20px; background: var(--bg-primary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-light); font-size: 0.75rem; color: var(--text-muted);">
+        <strong>Shortcuts:</strong><br>
+        <kbd>Ctrl</kbd> + <kbd>B</kbd> - Toggle Sidebar<br>
+        <kbd>Esc</kbd> - Close Sidebar (Mobile)
+    </div>
+</body>
+</html>

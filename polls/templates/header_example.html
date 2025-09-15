@@ -1,0 +1,51 @@
+<!-- Example header with dark mode toggle - Add this to your Django templates -->
+
+<!-- Add these script tags to the head of your HTML -->
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<script src="{% static 'js/dark-mode.js' %}" defer></script>
+
+<!-- Header with dark mode toggle -->
+<header class="goaltweaks-header">
+    <!-- Left side of header -->
+    <div class="header-left">
+        <a href="{% url 'home' %}" class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" height="32">
+            Student Performance
+        </a>
+    </div>
+
+    <!-- Right side of header -->
+    <div class="header-right">
+        <!-- Authentication buttons -->
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="auth-btn">Dashboard</a>
+            <a href="{% url 'logout' %}" class="auth-btn">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="auth-btn">Sign In</a>
+            <a href="{% url 'signup' %}" class="auth-btn primary">Sign Up</a>
+        {% endif %}
+
+        <!-- Dark mode toggle -->
+        <div class="dark-mode-toggle-container">
+            <span class="dark-mode-label">Dark Mode</span>
+            <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+        </div>
+    </div>
+</header>
+
+
+<div class="card">
+    <h3>Card</h3>
+    <p>This card automatically adapts to light and dark themes.</p>
+    <button class="btn primary">Primary Action</button>
+    <button class="btn secondary">Secondary Action</button>
+</div>
+
+<!-- Sidebar toggle button (if using sidebar) -->
+<button class="toggle-sidebar" aria-label="Toggle sidebar">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="3" x2="21" y2="3"></line>
+        <line x1="3" y1="6 x2="21" y2=6"></line>
+        <line x1="3" y1="9" x2="21" y2="9"></line>
+    </svg>
+</button>

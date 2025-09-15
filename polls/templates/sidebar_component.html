@@ -2,42 +2,150 @@
 
 <div class="sidebar-content">
     <div class="sidebar-header">
-        <h4>My Goals</h4>
-        <button class="add-section-btn" id="addSectionBtn">+ Add Section</button>
+        <h4>My Learning Goals</h4>
+        <button class="add-section-btn" id="addSectionBtn">
+            Add New Section
+        </button>
     </div>
     
     <div class="sections-container">
         <div class="section" data-section="academic">
             <div class="section-header">
-                <h4>📚 Academic Goals</h4>
+                <h4> Academic Courses</h4>
             </div>
-            <ul class="courses-list">
-                {% for course in courses %}
-                <li class="course-item">
-                    <a href="{% url 'subject_dashboard' course.id %}" class="course-link">
-                        <span class="course-name">{{ course.subject_name }}</span>
-                    </a>
-                    <div class="course-actions">
-                        <a href="{% url 'edit_course' course.id %}" class="edit-btn">✏️</a>
-                        <form method="post" action="{% url 'delete_course' course.id %}" onsubmit="return confirm('Are you sure?');">
-                            {% csrf_token %}
-                            <button type="submit" class="delete-btn">🗑️</button>
-                        </form>
-                    </div>
-                </li>
-                {% empty %}
-                <li class="empty-message">No courses added yet</li>
-                {% endfor %}
-            </ul>
-            <a href="{% url 'create_subject_entry' %}" class="add-course-btn">+ Add Course</a>
+            
+            {% if courses %}
+                <ul class="courses-list">
+                    {% for course in courses %}
+                    <li class="course-item">
+                        <a href="{% url 'subject_dashboard' course.id %}" class="course-link">
+                            <span class="course-name">{{ course.subject_name }}</span>
+                            <div class="course-actions">
+                                <a href="{% url 'edit_course' course.id %}" class="edit-btn" title="Edit Course">
+                                    ✏️
+                                </a>
+                                <form method="post" action="{% url 'delete_course' course.id %}" 
+                                      onsubmit="return confirm('Are you sure you want to delete {{ course.subject_name }}? This action cannot be undone.');"
+                                      style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-btn" title="Delete Course">
+                                        🗑️
+                                    </button>
+                                </form>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-message">
+                    No courses added yet.<br>
+                    <small>Start your learning journey by adding your first course!</small>
+                </div>
+            {% endif %}
+            
+            <a href="{% url 'create_subject_entry' %}" class="add-course-btn">
+                ➕ Add New Course
+            </a>
+        </div>
+
+        <!-- Future sections can be added here -->
+        <div class="section" data-section="study-plans" style="opacity: 0.6;">
+            <div class="section-header">
+                <h4> Study Plans</h4>
+            </div>
+            <div class="empty-message">
+                Study plans feature coming soon!<br>
+                <small>Organize your learning schedule and track progress.</small>
+            </div>
+        </div>
+
+        <div class="section" data-section="achievements" style="opacity: 0.6;">
+            <div class="section-header">
+                <h4> Achievements</h4>
+            </div>
+            <div class="empty-message">
+                Achievement system coming soon!<br>
+                <small>Celebrate your learning milestones.</small>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced add section functionality
     document.getElementById('addSectionBtn').addEventListener('click', function() {
-        alert('Functionality to add new sections coming soon!');
+
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(49, 130, 206, 0.3);
+            z-index: 10000;
+            font-weight: 600;
+            animation: slideInRight 0.3s ease-out;
+        `;
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                ✨ Custom sections feature coming soon!
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        style="background: none; border: none; color: white; margin-left: 1rem; cursor: pointer; font-size: 1.2rem;">
+                    ×
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 3000);
     });
+
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .course-item {
+            animation: fadeInUp 0.3s ease-out;
+        }
+        
+        .course-item:nth-child(1) { animation-delay: 0.1s; }
+        .course-item:nth-child(2) { animation-delay: 0.2s; }
+        .course-item:nth-child(3) { animation-delay: 0.3s; }
+        .course-item:nth-child(4) { animation-delay: 0.4s; }
+        .course-item:nth-child(5) { animation-delay: 0.5s; }
+    `;
+    document.head.appendChild(style);
 });
 </script>

@@ -76,6 +76,69 @@ class SubjectWizard(SessionWizardView):
     form_list = [Step1Form, Step2Form, Step3Form, Step4Form, Step5Form]
     template_name = "multi_form.html"
 
+    def get_form_kwargs(self, step=None):
+        kwargs = super().get_form_kwargs(step)
+        
+        # Only pass user and course to Step1Form
+        if step == '0':  # First step (0-indexed)
+            kwargs['user'] = self.request.user
+            
+            # If we're editing a course, pass it to the form
+            course_id = self.request.session.get('editing_course_id')
+            if course_id:
+                try:
+                    course = SubjectEntry.objects.get(
+                        id=course_id, 
+                        student=self.request.user.student
+                    )
+                    kwargs['course'] = course
+                except SubjectEntry.DoesNotExist:
+                    pass
+                    
+        return kwargs
+
+    def process_step(self, form):
+        """
+        Process each step and ensure validation passes before proceeding.
+        This method is called for each step validation.
+        """
+        # Let the parent class handle the default processing
+        step_data = super().process_step(form)
+        
+        # For Step 1, perform additional validation
+        if self.steps.current == '0':
+            if not form.is_valid():
+                # If form is invalid, the wizard will automatically stay on current step
+                # Add any additional logging or error handling here if needed
+                pass
+        
+        return step_data
+
+    def get_context_data(self, form, **kwargs):
+        """
+        Add additional context data to the template.
+        """
+        context = super().get_context_data(form=form, **kwargs)
+        
+        # Add step-specific context
+        if self.steps.current == '0':
+            context['step_title'] = 'Subject Information'
+            context['step_description'] = 'Enter the subject name and your previous scores'
+        elif self.steps.current == '1':
+            context['step_title'] = 'Study Hours'
+            context['step_description'] = 'How many hours do you study per week?'
+        elif self.steps.current == '2':
+            context['step_title'] = 'Extracurricular Activities'
+            context['step_description'] = 'Do you participate in extracurricular activities?'
+        elif self.steps.current == '3':
+            context['step_title'] = 'Sleep Pattern'
+            context['step_description'] = 'How many hours do you sleep on average?'
+        elif self.steps.current == '4':
+            context['step_title'] = 'Study Preparation'
+            context['step_description'] = 'Additional information about your study habits'
+            
+        return context
+
 
     def done(self, form_list, **kwargs):
         data = {}

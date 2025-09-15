@@ -13,8 +13,9 @@
     <link href="{% static 'css/styles_preview.css' %}" rel="stylesheet">
 </head>
 <body>
+    <script src="{% static 'js/dark-mode.js' %}" defer></script>
+    
     <header class="main-header">
-
         <div class="logo-container">
             <a href="{% url 'hero' %}" class="logo-link">
                 <img src="{% static 'images/gtlogo.png' %}" 
@@ -23,9 +24,16 @@
             </a>
         </div>
 
-        <div class="auth-buttons">
-            <a href="{% url 'login' %}" class="auth-btn sign-in">Sign In</a>
-            <a href="{% url 'signup' %}" class="auth-btn sign-up">Sign Up</a>
+        <div class="header-actions">
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}" class="auth-btn sign-in">Sign In</a>
+                <a href="{% url 'signup' %}" class="auth-btn sign-up">Sign Up</a>
+            </div>
+            <!-- Dark mode toggle -->
+            <div class="dark-mode-toggle-container">
+                <span class="dark-mode-label">Dark Mode</span>
+                <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+            </div>
         </div>
     </header>
 
