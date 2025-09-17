@@ -79,23 +79,88 @@ class SubjectWizard(SessionWizardView):
     def get_form_kwargs(self, step=None):
         kwargs = super().get_form_kwargs(step)
         
-        # Only pass user and course to Step1Form
+        # Only pass user, course, and mode to Step1Form
         if step == '0':  # First step (0-indexed)
             kwargs['user'] = self.request.user
             
-            # If we're editing a course, pass it to the form
-            course_id = self.request.session.get('editing_course_id')
-            if course_id:
+            # Determine the mode based on session flags
+            new_prediction_course_id = self.request.session.get('new_prediction_course_id')
+            
+            # Debug session state
+            print(f"DEBUG get_form_kwargs - new_prediction_course_id: {new_prediction_course_id}")
+            
+            if new_prediction_course_id:
+                # New prediction mode - create prediction for existing course
                 try:
                     course = SubjectEntry.objects.get(
-                        id=course_id, 
+                        id=new_prediction_course_id, 
                         student=self.request.user.student
                     )
                     kwargs['course'] = course
+                    kwargs['mode'] = 'new_prediction'
+                    print(f"DEBUG: Mode set to 'new_prediction' for course {course.subject_name}")
                 except SubjectEntry.DoesNotExist:
-                    pass
+                    if 'new_prediction_course_id' in self.request.session:
+                        del self.request.session['new_prediction_course_id']
+                    kwargs['mode'] = 'not_editing'
+                    print("DEBUG: Course not found, mode set to 'not_editing'")
+            else:
+                # Not editing mode - create new course
+                kwargs['mode'] = 'not_editing'
+                print("DEBUG: No session flags found, mode set to 'not_editing'")
                     
         return kwargs
+
+    def get_form_initial(self, step):
+        """Set initial data for forms when making new prediction"""
+        initial = super().get_form_initial(step)
+        
+        # Check new prediction mode
+        new_prediction_course_id = self.request.session.get('new_prediction_course_id')
+        
+        if new_prediction_course_id:
+            try:
+                course = SubjectEntry.objects.get(
+                    id=new_prediction_course_id, 
+                    student=self.request.user.student
+                )
+                
+                # Set initial data based on the step
+                if step == '0':  # Step1Form
+                    initial.update({
+                        'subject_name': course.subject_name,
+                        'previous_scores': course.previous_scores,
+                    })
+                elif step == '1':  # Step2Form
+                    initial.update({
+                        'hours_studied': course.hours_studied,
+                    })
+                elif step == '2':  # Step3Form
+                    initial.update({
+                        'extracurricular': course.extracurricular,
+                    })
+                elif step == '3':  # Step4Form
+                    initial.update({
+                        'sleep_hours': course.sleep_hours,
+                    })
+                elif step == '4':  # Step5Form
+                    # Convert comma-separated learning styles back to list
+                    learning_styles = []
+                    if course.preferred_learning_style:
+                        learning_styles = [style.strip() for style in course.preferred_learning_style.split(',')]
+                    
+                    initial.update({
+                        'question_papers': course.question_papers,
+                        'motivation': course.motivation,
+                        'preferred_learning_style': learning_styles,
+                    })
+                    
+            except SubjectEntry.DoesNotExist:
+                # Course doesn't exist, clear from session
+                if 'new_prediction_course_id' in self.request.session:
+                    del self.request.session['new_prediction_course_id']
+                    
+        return initial
 
     def process_step(self, form):
         """
@@ -120,10 +185,32 @@ class SubjectWizard(SessionWizardView):
         """
         context = super().get_context_data(form=form, **kwargs)
         
+        # Determine the mode
+        new_prediction_course_id = self.request.session.get('new_prediction_course_id')
+        
+        print(f"DEBUG get_context_data - Full session: {dict(self.request.session)}")
+        print(f"DEBUG get_context_data - new_prediction_course_id: {new_prediction_course_id}")
+        
+        # Add mode-specific context
+        if new_prediction_course_id:
+            context['wizard_title'] = 'New Prediction'
+            context['wizard_subtitle'] = 'Create a new performance prediction for your course'
+            print("DEBUG get_context_data: Set wizard_title to 'New Prediction'")
+        else:
+            context['wizard_title'] = 'Add New Course'
+            context['wizard_subtitle'] = 'Add a new subject to track your performance'
+            print("DEBUG get_context_data: Set wizard_title to 'Add New Course'")
+        
+        print(f"DEBUG get_context_data: Final wizard_title = '{context['wizard_title']}'")
+        
         # Add step-specific context
         if self.steps.current == '0':
-            context['step_title'] = 'Subject Information'
-            context['step_description'] = 'Enter the subject name and your previous scores'
+            if new_prediction_course_id:
+                context['step_title'] = 'Course Information'
+                context['step_description'] = 'Confirm the course and enter your latest scores'
+            else:
+                context['step_title'] = 'Subject Information'
+                context['step_description'] = 'Enter the subject name and your previous scores'
         elif self.steps.current == '1':
             context['step_title'] = 'Study Hours'
             context['step_description'] = 'How many hours do you study per week?'
@@ -148,14 +235,32 @@ class SubjectWizard(SessionWizardView):
         student = self.request.user.student
         subject_name = data.get("subject_name", "Unnamed course")
 
-        # Check if we're editing an existing course or creating a new one
-        course_id = self.request.session.get('editing_course_id')
+        # Convert learning style list to comma-separated string
+        learning_styles = data.get("preferred_learning_style", [])
+        if isinstance(learning_styles, list):
+            preferred_learning_style = ", ".join(learning_styles)
+        else:
+            preferred_learning_style = str(learning_styles) if learning_styles else "None"
+
+        # Determine the mode and course ID
+        new_prediction_course_id = self.request.session.get('new_prediction_course_id')
         
-        if course_id:
-            # Editing an existing course - get the course and create a prediction entry
-            subject = get_object_or_404(SubjectEntry, id=course_id, student=student)
+        if new_prediction_course_id:
+            # NEW PREDICTION MODE: Update course data and create new prediction entry
+            subject = get_object_or_404(SubjectEntry, id=new_prediction_course_id, student=student)
             
-            # Create a new prediction entry
+            # DON'T update the subject name in new_prediction mode!
+            # The subject name should remain the same, only update other fields
+            subject.hours_studied = data["hours_studied"]
+            subject.previous_scores = data["previous_scores"]
+            subject.extracurricular = data["extracurricular"]
+            subject.sleep_hours = data["sleep_hours"]
+            subject.question_papers = data["question_papers"]
+            subject.motivation = data.get("motivation", "Medium")
+            subject.preferred_learning_style = preferred_learning_style
+            subject.save()
+            
+            # Create a new prediction entry for history tracking
             entry = CourseSpecificEntry.objects.create(
                 subject=subject,
                 hours_studied=data["hours_studied"],
@@ -164,16 +269,15 @@ class SubjectWizard(SessionWizardView):
                 sleep_hours=data["sleep_hours"],
                 question_papers=data["question_papers"],
                 motivation=data.get("motivation", "Medium"),
-                preferred_learning_style=data.get("preferred_learning_style", "None"),
+                preferred_learning_style=preferred_learning_style,
             )
             
-            # Clear the editing flag from session
-            if 'editing_course_id' in self.request.session:
-                del self.request.session['editing_course_id']
-                
+            # Clear the new prediction flag from session
+            del self.request.session['new_prediction_course_id']
             redirect_id = subject.id
+            
         else:
-            # Creating a new course
+            # NOT EDITING MODE: Creating a new course
             subject = SubjectEntry.objects.create(
                 student=student,
                 subject_name=subject_name,
@@ -183,7 +287,7 @@ class SubjectWizard(SessionWizardView):
                 sleep_hours=data["sleep_hours"],
                 question_papers=data["question_papers"],
                 motivation=data.get("motivation", "Medium"),
-                preferred_learning_style=data.get("preferred_learning_style", "None"),
+                preferred_learning_style=preferred_learning_style,
             )
 
             # Also create a prediction entry for consistency
@@ -195,47 +299,24 @@ class SubjectWizard(SessionWizardView):
                 sleep_hours=data["sleep_hours"],
                 question_papers=data["question_papers"],
                 motivation=data.get("motivation", "Medium"),
-                preferred_learning_style=data.get("preferred_learning_style", "None"),
+                preferred_learning_style=preferred_learning_style,
             )
         
             redirect_id = subject.id
 
-        # 🔗 Send to FastAPI
-        payload = {
-            "hours_studied": entry.hours_studied,
-            "previous_scores": entry.previous_scores,
-            "extracurricular": entry.extracurricular,
-            "sleep_hours": entry.sleep_hours,
-            "question_papers": entry.question_papers,
-        }
+        # ... rest of your code for FastAPI prediction ...
 
-        try:
-            response = requests.post(FASTAPI_PREDICTION_URL, json=payload)
-            response.raise_for_status()
-            result = response.json()
+
+        def post(self, request, *args, **kwargs):
+            print(f"Current Step: {self.steps.current}")  
+            form = self.get_form()
+            print("Form errors:", form.errors)
             
-            # Update both the prediction entry and the subject entry
-            entry.predicted_score = result.get('predicted_score')
-            entry.save()
+            # Debug: Check the mode being passed
+            new_prediction_course_id = self.request.session.get('new_prediction_course_id')
+            print(f"DEBUG - Session new_prediction_course_id: {new_prediction_course_id}")
             
-            # Also update the main subject entry with the latest prediction
-            subject.predicted_score = result.get('predicted_score')
-            subject.save()
-
-            # Log the result to see what is being returned
-            # print("FastAPI Response:", result)
-            # print("Sending Payload:", payload)
-
-        except Exception as e:
-            print("FastAPI prediction failed:", e)
-         
-        return redirect('subject_dashboard', course_id=redirect_id)
-    
-    def post(self, request, *args, **kwargs):
-        print(f"Current Step: {self.steps.current}")  
-        form = self.get_form()
-        print("Form errors:", form.errors)  
-        return super().post(request, *args, **kwargs)
+            return super().post(request, *args, **kwargs)
 
 
 def subject_dashboard(request, course_id):
@@ -595,12 +676,41 @@ def questionnaire_view(request):
 
 
 @login_required
-def edit_course(request, course_id):
-    # Store the course ID in session to indicate we're editing
-    request.session['editing_course_id'] = course_id
+def new_prediction(request, course_id):
+    print(f"DEBUG new_prediction: Function called with course_id={course_id}")
+    print(f"DEBUG new_prediction: Session before changes: {dict(request.session)}")
     
-    # Redirect to the wizard which will detect we're in edit mode
+    # Store the course ID in session to indicate we're making a new prediction
+    print(f"DEBUG new_prediction: Setting new_prediction_course_id to {course_id}")
+    request.session['new_prediction_course_id'] = course_id
+    
+    # Force session save
+    request.session.save()
+    print(f"DEBUG new_prediction: Session after changes: {dict(request.session)}")
+    
+    print("DEBUG new_prediction: Redirecting to wizard")
+    # Redirect to the wizard which will detect we're in new prediction mode
     return redirect('create_subject_entry')  
+
+
+@login_required
+def new_course(request):
+    """Clear any session flags and start creating a new course"""
+    print(f"DEBUG new_course: Function called")
+    print(f"DEBUG new_course: Session before changes: {dict(request.session)}")
+    
+    # Clear any existing mode flags
+    if 'new_prediction_course_id' in request.session:
+        print("DEBUG new_course: Clearing new_prediction_course_id from session")
+        del request.session['new_prediction_course_id']
+    
+    # Force session save
+    request.session.save()
+    print(f"DEBUG new_course: Session after changes: {dict(request.session)}")
+    
+    print("DEBUG new_course: Redirecting to wizard in not_editing mode")
+    # Redirect to the wizard which will detect we're in not_editing mode
+    return redirect('create_subject_entry')
 
 
 @login_required

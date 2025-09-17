@@ -24,6 +24,25 @@ body {
     color: #2d3748;
 }
 
+/* Mode heading styles */
+.mode-heading {
+    text-align: center;
+    color: #3182ce;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mode-subtitle {
+    text-align: center;
+    color: #4a5568;
+    font-size: 1rem;
+    margin: 0 0 30px 0;
+    font-style: italic;
+}
+
 .form-step {
     margin-bottom: 20px;
 }
@@ -199,4 +218,162 @@ button:hover {
 
 .finish-btn:hover {
     background: #2f855a !important;
+}
+
+/* Learning Style Checkboxes */
+.learning-style-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.learning-style-checkboxes ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.learning-style-checkboxes li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.learning-style-checkboxes input[type="checkbox"] {
+    margin-right: 0.75rem;
+    transform: scale(1.2);
+    accent-color: #3182ce;
+}
+
+.learning-style-checkboxes label {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.learning-style-checkboxes label:hover {
+    background: #edf2f7;
+    border-color: #3182ce;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(49, 130, 206, 0.15);
+}
+
+.learning-style-checkboxes input[type="checkbox"]:checked + label,
+.learning-style-checkboxes label:has(input[type="checkbox"]:checked) {
+    background: #ebf8ff;
+    border-color: #3182ce;
+    color: #2c5aa0;
+    font-weight: 600;
+}
+
+/* Alternative selector for Django-generated checkboxes */
+.learning-style-checkboxes li label {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #4a5568;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.learning-style-checkboxes li:hover label {
+    background: #edf2f7;
+    border-color: #3182ce;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(49, 130, 206, 0.15);
+}
+
+.learning-style-checkboxes li input[type="checkbox"]:checked + label {
+    background: #ebf8ff;
+    border-color: #3182ce;
+    color: #2c5aa0;
+    font-weight: 600;
+}
+
+.learning-style-checkboxes input[type="checkbox"]:checked {
+    accent-color: #3182ce;
+}
+
+/* Motivation Dropdown Enhancement */
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+select.form-control:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    outline: none;
+}
+
+/* Form Field Improvements for Multi-select */
+.form-field {
+    margin-bottom: 1.5rem;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.875rem;
+}
+
+.form-field ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* Validation Error Styling for Checkboxes */
+.learning-style-checkboxes + .errorlist {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #fed7d7;
+    border: 1px solid #fc8181;
+    border-radius: 6px;
+    color: #c53030;
+    font-size: 0.875rem;
+    list-style: none;
+}
+
+.learning-style-checkboxes + .errorlist li {
+    margin: 0;
+}
+
+/* Responsive Design for Checkboxes */
+@media (max-width: 480px) {
+    .learning-style-checkboxes {
+        gap: 0.75rem;
+    }
+    
+    .learning-style-checkboxes label {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .learning-style-checkboxes input[type="checkbox"] {
+        margin-right: 0.5rem;
+        transform: scale(1.1);
+    }
 }

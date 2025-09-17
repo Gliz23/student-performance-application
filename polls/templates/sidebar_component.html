@@ -21,9 +21,6 @@
                         <a href="{% url 'subject_dashboard' course.id %}" class="course-link">
                             <span class="course-name">{{ course.subject_name }}</span>
                             <div class="course-actions">
-                                <a href="{% url 'edit_course' course.id %}" class="edit-btn" title="Edit Course">
-                                    ✏️
-                                </a>
                                 <form method="post" action="{% url 'delete_course' course.id %}" 
                                       onsubmit="return confirm('Are you sure you want to delete {{ course.subject_name }}? This action cannot be undone.');"
                                       style="display: inline;">
@@ -44,7 +41,7 @@
                 </div>
             {% endif %}
             
-            <a href="{% url 'create_subject_entry' %}" class="add-course-btn">
+            <a href="{% url 'new_course' %}" class="add-course-btn">
                 ➕ Add New Course
             </a>
         </div>

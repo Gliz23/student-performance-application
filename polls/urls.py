@@ -16,7 +16,9 @@ urlpatterns = [
 
     path('create-subject/', SubjectWizard.as_view(
         [Step1Form, Step2Form, Step3Form, Step4Form, Step5Form]
-    ), name='create_subject_entry'),   
+    ), name='create_subject_entry'),
+    
+    path('new-course/', views.new_course, name='new_course'),   
     path('results/<int:subject_id>/', subject_results_view, name='subject_results'),
     
     # path("generate-study-plan/<int:entry_id>/", views.generate_study_plan, name="generate_study_plan"),
@@ -31,8 +33,8 @@ urlpatterns = [
     path("student_dashboard/", views.student_dashboard_view, name="student_dashboard"),
     
     path('delete-course/<int:course_id>/', delete_course, name='delete_course'),
-
-    path('course/edit/<int:course_id>/', views.edit_course, name='edit_course'),
+    
+    path('course/new-prediction/<int:course_id>/', views.new_prediction, name='new_prediction'),
 
     path('course/<int:course_id>/history/', views.course_history_dashboard, name='course_history'),
 ]

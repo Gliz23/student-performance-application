@@ -19,7 +19,7 @@
         </div>
         <div class="header-actions">
             <div class="auth-buttons">
-                <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a>
+                <!-- <a href="{% url 'student_dashboard' %}" class="auth-btn dashboard-btn">My Dashboard</a> -->
                 <form action="{% url 'logout' %}" method="POST" class="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="auth-btn logout-btn">Logout</button>
@@ -45,7 +45,7 @@
         {% endif %}
 
         <div class="button-group">
-            <a href="{% url 'create_subject_entry' %}" class="hero-btn btn">Add New Course</a>
+            <a href="{% url 'new_course' %}" class="hero-btn btn">Add New Course</a>
              <a href="{% url 'create_subject_entry' %}" class="hero-btn btn">Create Study Plan</a>
         </div>
 
