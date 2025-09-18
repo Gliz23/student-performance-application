@@ -1,37 +1,51 @@
 class FormValidator {
     constructor() {
-        this.mode = this.detectMode(); // Detect the mode
+        this.mode = this.detectMode();
         this.init();
     }
 
     detectMode() {
-        // Check if we're in new_prediction mode
+        // Check if subject name field is read-only (indicates new_prediction mode)
+        const subjectNameInput = document.querySelector('input[name="0-subject_name"]');
+        if (subjectNameInput && subjectNameInput.readOnly) {
+            return 'new_prediction';
+        }
+        
+        // Check wizard title
         const wizardTitle = document.querySelector('.wizard-title');
         if (wizardTitle && wizardTitle.textContent.includes('New Prediction')) {
             return 'new_prediction';
         }
         
-        // Check for hidden input or data attribute
-        const modeInput = document.querySelector('input[name="mode"]');
-        if (modeInput && modeInput.value === 'new_prediction') {
-            return 'new_prediction';
-        }
-        
-        // Check for data attribute on the form
-        const form = document.querySelector('form');
-        if (form && form.dataset.mode === 'new_prediction') {
-            return 'new_prediction';
-        }
-        
-        return 'not_editing'; // Default mode
+        return 'not_editing';
     }
 
     init() {
-        // Add event listeners for real-time validation
         document.addEventListener('DOMContentLoaded', () => {
             console.log('FormValidator initialized in mode:', this.mode);
             this.setupValidation();
         });
+    }
+
+    setupValidation() {
+        const subjectNameInput = document.querySelector('input[name="0-subject_name"]');
+        const previousScoresInput = document.querySelector('input[name="0-previous_scores"]');
+
+        if (subjectNameInput) {
+            subjectNameInput.addEventListener('blur', (e) => this.validateSubjectName(e.target));
+            subjectNameInput.addEventListener('input', (e) => this.clearValidationState(e.target));
+        }
+
+        if (previousScoresInput) {
+            previousScoresInput.addEventListener('blur', (e) => this.validatePreviousScores(e.target));
+            previousScoresInput.addEventListener('input', (e) => this.clearValidationState(e.target));
+        }
+
+        // REMOVE the form submission handler - let Django handle it
+        // const form = document.querySelector('form');
+        // if (form) {
+        //     form.addEventListener('submit', (e) => this.handleFormSubmission(e));
+        // }
     }
 
     validateSubjectName(input) {
@@ -45,7 +59,7 @@ class FormValidator {
             return false;
         }
 
-        // In new_prediction mode, skip duplicate validation
+        // Skip duplicate validation in new_prediction mode
         if (this.mode === 'new_prediction') {
             console.log('new_prediction mode - skipping duplicate validation');
             this.showFieldSuccess(input);
@@ -69,12 +83,11 @@ class FormValidator {
             return false;
         }
 
-        // Show success state
         this.showFieldSuccess(input);
         return true;
     }
 
-    // ... rest of your JavaScript code ...
+    // ... keep the rest of your methods but REMOVE handleFormSubmission ...
 }
 
 // Initialize the form validator

@@ -304,10 +304,69 @@ class SubjectWizard(SessionWizardView):
         
             redirect_id = subject.id
 
-        # ... rest of your code for FastAPI prediction ...
+        # Send data to FastAPI for prediction
+        payload = {
+            "hours_studied": data["hours_studied"],
+            "previous_scores": data["previous_scores"],
+            "extracurricular": data["extracurricular"],
+            "sleep_hours": data["sleep_hours"],
+            "question_papers": data["question_papers"],
+            "motivation": data.get("motivation", "Medium"),
+            "preferred_learning_style": preferred_learning_style,
+        }
+        print("DEBUG: Sending payload to FastAPI:", payload)  # Log the payload
+        
+        try:
+            # Send prediction request to FastAPI
+            response = requests.post(FASTAPI_PREDICTION_URL, json=payload)
+            response.raise_for_status()  # Raise exception for bad status codes
+            
+            # Parse the prediction result
+            prediction_result = response.json()
+            print("DEBUG: Received response from FastAPI:", prediction_result)
+            predicted_score = prediction_result.get("predicted_score")
+            
+            # Debugging log
+            if predicted_score is None:
+                print("Warning: Predicted score is None. API response:", prediction_result)
+
+            # Update the entry with the prediction result
+            if predicted_score is not None:
+                entry.predicted_score = predicted_score
+                entry.save()
+                
+                # Also update the subject's predicted score if this is the latest prediction
+                if new_prediction_course_id:
+                    subject.predicted_score = predicted_score
+                    subject.save()
+
+                # Also update the subject's predicted score (for both new prediction and new course modes)
+                subject.predicted_score = predicted_score
+                subject.save()
+                    
+                # Add success message
+                messages.success(self.request, f"Prediction successful! Estimated score: {predicted_score}")
+            else:
+                messages.warning(self.request, "Prediction completed but no score was returned.")
+                
+        except requests.exceptions.RequestException as e:
+            # Handle API connection errors
+            print(f"Error connecting to prediction API: {e}")
+            messages.error(self.request, "Failed to get prediction from our system. Please try again later.")
+        except json.JSONDecodeError as e:
+            # Handle JSON parsing errors
+            print(f"Error parsing prediction response: {e}")
+            messages.error(self.request, "Error processing prediction result.")
+        except Exception as e:
+            # Handle any other unexpected errors
+            print(f"Unexpected error during prediction: {e}")
+            messages.error(self.request, "An unexpected error occurred during prediction.")
 
 
-        def post(self, request, *args, **kwargs):
+        # Redirect to the subject dashboard - THIS LINE WAS MISPLACED
+        return redirect('subject_dashboard', course_id=redirect_id)
+    
+    def post(self, request, *args, **kwargs):
             print(f"Current Step: {self.steps.current}")  
             form = self.get_form()
             print("Form errors:", form.errors)
@@ -317,7 +376,6 @@ class SubjectWizard(SessionWizardView):
             print(f"DEBUG - Session new_prediction_course_id: {new_prediction_course_id}")
             
             return super().post(request, *args, **kwargs)
-
 
 def subject_dashboard(request, course_id):
     course = get_object_or_404(SubjectEntry, id=course_id)
@@ -706,9 +764,12 @@ def new_course(request):
     
     # Force session save
     request.session.save()
+
+
     print(f"DEBUG new_course: Session after changes: {dict(request.session)}")
     
     print("DEBUG new_course: Redirecting to wizard in not_editing mode")
+
     # Redirect to the wizard which will detect we're in not_editing mode
     return redirect('create_subject_entry')
 

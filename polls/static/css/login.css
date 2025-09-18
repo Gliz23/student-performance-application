@@ -18,6 +18,7 @@
 
 
 .login-card {
+    top: 100px;
     position: relative;
     display: flex;
     flex-direction: column;
